@@ -26,4 +26,10 @@ dependencies {
     })
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     testCompile 'junit:junit:4.12'
+    // mockito
+    testCompile "org.mockito:mockito-core:2.0.57-beta"
+
+    // retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile "com.squareup.retrofit2:converter-gson:+"
 }
