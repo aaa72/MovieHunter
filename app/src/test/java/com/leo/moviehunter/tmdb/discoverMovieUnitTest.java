@@ -1,7 +1,8 @@
 package com.leo.moviehunter.tmdb;
 
-import com.leo.moviehunter.tmdb.response.Genre;
-import com.leo.moviehunter.tmdb.response.getGenres;
+import com.leo.moviehunter.tmdb.TMDBConstants.SortBy;
+import com.leo.moviehunter.tmdb.response.DiscoverMovie;
+import com.leo.moviehunter.tmdb.response.DiscoverMovie.Result;
 import com.leo.moviehunter.tmdb.service.TMDBService;
 
 import org.junit.Assert;
@@ -15,7 +16,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class getGenresUnitTest {
+public class discoverMovieUnitTest {
 
     private TMDBService mService;
 
@@ -33,15 +34,18 @@ public class getGenresUnitTest {
     public void searchMovie() throws Exception {
         System.out.println("start test");
 
-        Call<getGenres> call = mService.getGenres(TMDBConstants.TMDB_API_KEY, Locale.getDefault().getLanguage());
+        Call<DiscoverMovie> call = mService.discoverMovie(TMDBConstants.TMDB_API_KEY
+                , Locale.getDefault().getLanguage(), Locale.getDefault().getCountry()
+                , SortBy.popularity.asc(), true, 1, "");
 
-        Response<getGenres> response = call.execute();
+        Response<DiscoverMovie> response = call.execute();
 
         System.out.println("response successful: " + response.isSuccessful());
 
-        getGenres genres = response.body();
-        for (Genre genre : genres.genres) {
-            System.out.println("id: " + genre.id + ", name: " + genre.name);
+        DiscoverMovie discoverMovie = response.body();
+        System.out.println(discoverMovie.page + "/" + discoverMovie.total_pages);
+        for (Result result : discoverMovie.results) {
+            System.out.println("title: " + result.title + ", ori title: " + result.original_title);
         }
 
         Assert.assertTrue(response.isSuccessful());

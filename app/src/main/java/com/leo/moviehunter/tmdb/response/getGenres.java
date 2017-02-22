@@ -1,5 +1,5 @@
 package com.leo.moviehunter.tmdb.response;
 
-public class Genres {
+public class getGenres {
     public Genre[] genres;
 }
