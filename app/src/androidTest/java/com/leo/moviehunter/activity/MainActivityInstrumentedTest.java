@@ -1,8 +1,5 @@
 package com.leo.moviehunter.activity;
 
-import android.accessibilityservice.AccessibilityService.SoftKeyboardController;
-import android.content.ComponentName;
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -13,7 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -25,6 +21,8 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -45,4 +43,9 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.text)).check(matches(withText("12345")));
     }
 
+    @Test
+    public void testRecyclerView() {
+        onData(allOf(is(instanceOf(String.class)), is("驚悚"))).perform(click());
+        intended(hasComponent(TargetActivity.class.getCanonicalName()));
+    }
 }

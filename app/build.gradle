@@ -43,4 +43,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:25.2.0", {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+
+    // recycler view
+    compile "com.android.support:recyclerview-v7:25.2.0"
 }
