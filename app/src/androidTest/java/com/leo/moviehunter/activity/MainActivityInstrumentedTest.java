@@ -1,5 +1,8 @@
 package com.leo.moviehunter.activity;
 
+import android.content.ComponentName;
+import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -10,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -28,8 +32,11 @@ import static org.hamcrest.Matchers.is;
 @LargeTest
 public class MainActivityInstrumentedTest {
 
+//    @Rule
+//    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+    public IntentsTestRule<MainActivity> mIntentRule = new IntentsTestRule<>(MainActivity.class);
 
     @Test
     public void testButtonClick() throws Exception {
@@ -45,7 +52,11 @@ public class MainActivityInstrumentedTest {
 
     @Test
     public void testRecyclerView() {
-        onData(allOf(is(instanceOf(String.class)), is("驚悚"))).perform(click());
-        intended(hasComponent(TargetActivity.class.getCanonicalName()));
+//        onData(allOf(is(instanceOf(String.class)), is("驚悚"))).perform(click());
+        onView(withId(R.id.recycler))
+                .perform(RecyclerViewActions.actionOnItem(withText("驚悚"), click()));
+
+//        intended(hasComponent(new ComponentName(getTargetContext(), TargetActivity.class)));
+        intended(hasComponent(TargetActivity.class.getName()));
     }
 }

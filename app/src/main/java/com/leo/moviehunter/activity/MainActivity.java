@@ -1,5 +1,6 @@
 package com.leo.moviehunter.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         // you provide access to all the views for a data item in a view holder
         public static class ViewHolder extends RecyclerView.ViewHolder {
             // each data item is just a string in this case
-            public TextView mTextView;
+            private TextView mTextView;
+
             public ViewHolder(TextView v) {
                 super(v);
                 mTextView = v;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create new views (invoked by the layout manager)
         @Override
-        public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+        public ViewHolder onCreateViewHolder(ViewGroup parent,
                                                        int viewType) {
             // create a new view
             TextView v = new TextView(parent.getContext());
@@ -93,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
             holder.mTextView.setText(mDataset[position]);
+            holder.mTextView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), TargetActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+            });
 
         }
 
