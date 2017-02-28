@@ -1,8 +1,6 @@
 package com.leo.moviehunter.activity;
 
-import android.content.ComponentName;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -13,50 +11,48 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class MainActivityInstrumentedTest {
 
-//    @Rule
-//    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
-
     @Rule
-    public IntentsTestRule<MainActivity> mIntentRule = new IntentsTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void testButtonClick() throws Exception {
 
-//        onView(withId(R.id.text)).perform(ViewActions.scrollTo());
-//
-//        intended(hasComponent(new ComponentName(getTargetContext(), TargetActivity.class)));
+        // launch activity
+//        intended(hasComponent(new ComponentName(getTargetContext(), GenreActivity.class)));
 
-        onView(withId(R.id.edit)).perform(typeText("12345"), closeSoftKeyboard());
-        onView(withId(R.id.button)).perform(click());
+        // input text
+//        onView(withId(R.id.edit)).perform(typeText("12345"), closeSoftKeyboard());
+
+        // click button
+//        onView(withId(R.id.button)).perform(click());
+
+        // check text contain text
         onView(withId(R.id.text)).check(matches(withText("12345")));
     }
 
+//    @Rule
+//    public IntentsTestRule<MainActivity> mIntentRule = new IntentsTestRule<>(MainActivity.class);
+
     @Test
     public void testRecyclerView() {
+        // find view in list/grid view and click
 //        onData(allOf(is(instanceOf(String.class)), is("驚悚"))).perform(click());
-        onView(withId(R.id.recycler))
-                .perform(RecyclerViewActions.actionOnItem(withText("驚悚"), click()));
 
-//        intended(hasComponent(new ComponentName(getTargetContext(), TargetActivity.class)));
-        intended(hasComponent(TargetActivity.class.getName()));
+        // find view in recycler view and click
+        onView(withId(R.id.recycler)).perform(RecyclerViewActions.actionOnItem(withText("惊悚"), click()));
+
+        // check launch activity
+//        intended(hasComponent(new ComponentName(getTargetContext(), GenreActivity.class)));
+//        intended(hasComponent(GenreActivity.class.getName()));
     }
 }
