@@ -5,6 +5,7 @@ import com.leo.moviehunter.tmdb.response.DiscoverMovie;
 import com.leo.moviehunter.tmdb.response.Genre;
 import com.leo.moviehunter.tmdb.response.GetConfiguration;
 import com.leo.moviehunter.tmdb.response.GetGenres;
+import com.leo.moviehunter.tmdb.response.MovieDetail;
 import com.leo.moviehunter.tmdb.response.SearchMovie;
 import com.leo.moviehunter.tmdb.response.SearchMovie.Results;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
@@ -69,7 +70,7 @@ public class TMDBServiceUnitTest {
         System.out.println("discoverMovie");
 
         Call<DiscoverMovie> call = mService.discoverMovie(Locale.getDefault().getCountry()
-                , TMDBConstants.SortBy.popularity.asc(), true, 1, "");
+                , TMDBConstants.SortBy.popularity.desc(), true, 1, "53");
 
         Response<DiscoverMovie> response = call.execute();
 
@@ -78,7 +79,7 @@ public class TMDBServiceUnitTest {
         DiscoverMovie discoverMovie = response.body();
         System.out.println(discoverMovie.page + "/" + discoverMovie.total_pages);
         for (DiscoverMovie.Result result : discoverMovie.results) {
-            System.out.println("title: " + result.title + ", ori title: " + result.original_title);
+            System.out.println("id: " + result.id + ", title: " + result.title + ", ori title: " + result.original_title);
         }
 
         assertTrue(response.isSuccessful());
@@ -96,6 +97,22 @@ public class TMDBServiceUnitTest {
 
         GetConfiguration getConfiguration = response.body();
         System.out.println(new Gson().toJson(getConfiguration));
+
+        assertTrue(response.isSuccessful());
+    }
+
+    @Test
+    public void getMovieDetail() throws Exception {
+        System.out.println("getMovieDetail");
+
+        Call<MovieDetail> call = mService.getMovieDetail(49026);
+
+        Response<MovieDetail> response = call.execute();
+
+        System.out.println("response successful: " + response.isSuccessful());
+
+        MovieDetail movieDetail = response.body();
+        System.out.println(new Gson().toJson(movieDetail));
 
         assertTrue(response.isSuccessful());
     }

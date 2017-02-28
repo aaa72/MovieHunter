@@ -22,6 +22,10 @@
         <activity android:name=".activity.GenreActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             />
+
+        <activity android:name=".activity.MovieDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
     </application>
 
 </manifest>

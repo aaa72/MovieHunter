@@ -4,6 +4,7 @@ import com.leo.moviehunter.tmdb.TMDBConstants;
 import com.leo.moviehunter.tmdb.response.DiscoverMovie;
 import com.leo.moviehunter.tmdb.response.GetConfiguration;
 import com.leo.moviehunter.tmdb.response.GetGenres;
+import com.leo.moviehunter.tmdb.response.MovieDetail;
 import com.leo.moviehunter.tmdb.response.SearchMovie;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public class TMDBServiceManager {
@@ -85,6 +87,9 @@ public class TMDBServiceManager {
 
         @GET("configuration")
         Call<GetConfiguration> getConfiguration();
+
+        @GET("movie/{movie_id}")
+        Call<MovieDetail> getMovieDetail(@Path("movie_id") int movieId);
 
     }
 }

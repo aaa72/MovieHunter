@@ -15,6 +15,7 @@ public class TMDBConfigurationUnitTest {
         String imageBaseUrl = TMDBConfiguration.getImageBaseUrl();
 
         System.out.println("imageBaseUrl = " + imageBaseUrl);
+        // http://image.tmdb.org/t/p/w300/
 
         Assert.assertNotNull(imageBaseUrl);
     }

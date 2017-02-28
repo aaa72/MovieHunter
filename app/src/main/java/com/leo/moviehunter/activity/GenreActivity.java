@@ -1,6 +1,7 @@
 package com.leo.moviehunter.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
@@ -19,8 +20,8 @@ import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.tmdb.TMDBConstants;
 import com.leo.moviehunter.tmdb.response.DiscoverMovie;
-import com.leo.moviehunter.tmdb.service.TMDBConfiguration;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
+import com.leo.moviehunter.util.GetImgeBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 
@@ -72,14 +73,10 @@ public class GenreActivity extends AppCompatActivity {
         });
 
         // load image base url
-        new AsyncTask<Void, Void, String>() {
+        new GetImgeBaseUrlTask() {
             @Override
-            protected String doInBackground(Void... params) {
-                return TMDBConfiguration.getImageBaseUrl();
-            }
-            @Override
-            protected void onPostExecute(String imageBaseUrl) {
-                mMovieAdapter.setImageBaseUrl(imageBaseUrl);
+            public void onGetUrl(String url) {
+                mMovieAdapter.setImageBaseUrl(url);
                 getMoreMovie();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
@@ -144,6 +141,7 @@ public class GenreActivity extends AppCompatActivity {
             private TextView mText1;
             private TextView mText2;
             private TextView mText3;
+            private MovieOnClickListener mMovieOnClickListener;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -152,6 +150,27 @@ public class GenreActivity extends AppCompatActivity {
                 mText1 = (TextView) itemView.findViewById(R.id.movie_text_1);
                 mText2 = (TextView) itemView.findViewById(R.id.movie_text_2);
                 mText3 = (TextView) itemView.findViewById(R.id.movie_text_3);
+                mMovieOnClickListener = new MovieOnClickListener(itemView.getContext());
+                mContainer.setOnClickListener(mMovieOnClickListener);
+            }
+        }
+
+        private static class MovieOnClickListener implements View.OnClickListener {
+            private int mMovieId;
+            private final Intent mLaunchIntent;
+
+            public MovieOnClickListener(Context context) {
+                mLaunchIntent = new Intent(context, MovieDetailActivity.class);
+            }
+
+            public  void setMovieId(int id) {
+                mMovieId = id;
+            }
+
+            @Override
+            public void onClick(View v) {
+                mLaunchIntent.putExtra(MHConstants.BUNDLE_KEY_MOVIE_ID, mMovieId);
+                v.getContext().startActivity(mLaunchIntent);
             }
         }
 
@@ -177,6 +196,7 @@ public class GenreActivity extends AppCompatActivity {
             holder.mText1.setText(movie.title + " / " + movie.original_title);
             holder.mText2.setText(context.getString(R.string.score) + ": " + movie.vote_average);
             holder.mText3.setText(movie.release_date);
+            holder.mMovieOnClickListener.setMovieId(movie.id);
         }
 
         @Override
