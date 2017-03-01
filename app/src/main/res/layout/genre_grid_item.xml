@@ -9,9 +9,9 @@
         android:id="@+id/genre_image"
         android:layout_width="match_parent"
         android:layout_height="118dp"
-        app:srcCompat="?android:attr/alertDialogIcon"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@android:drawable/ic_dialog_alert"
         />
 
     <TextView
@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/genre_image"
         android:layout_centerHorizontal="true"
-        />
+        android:textAppearance="@android:style/TextAppearance.Large"/>
 
 </RelativeLayout>

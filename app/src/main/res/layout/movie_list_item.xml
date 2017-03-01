@@ -4,11 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/movie_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
     <ImageView
         android:id="@+id/movie_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="?android:attr/alertDialogIcon"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
@@ -20,11 +25,11 @@
         android:id="@+id/movie_text_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/movie_image"
         android:layout_alignParentTop="true"
-        android:maxLines="1"
         android:layout_marginTop="3dp"
-        />
+        android:layout_toRightOf="@id/movie_image"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:id="@+id/movie_text_2"
@@ -32,9 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/movie_text_1"
         android:layout_below="@id/movie_text_1"
-        android:maxLines="1"
         android:layout_marginTop="3dp"
-        />
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:id="@+id/movie_text_3"
@@ -42,9 +47,26 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/movie_text_2"
         android:layout_below="@id/movie_text_2"
-        android:maxLines="3"
-        android:ellipsize="end"
         android:layout_marginTop="3dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/get_more_container"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:visibility="gone"
+        >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:layout_centerInParent="true"
         />
+    </RelativeLayout>
 
 </RelativeLayout>

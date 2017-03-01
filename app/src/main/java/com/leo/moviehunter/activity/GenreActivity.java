@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,16 +62,11 @@ public class GenreActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mMovieAdapter = new DiscoverMovieAdapter();
         mRecyclerView.setAdapter(mMovieAdapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (!recyclerView.canScrollVertically(1)) {
-                    Log.d(TAG, "scroll to bottom");
-                    getMoreMovie();
-                }
-            }
-        });
+
+        // scroll to end auto get more movie
+        if (false) { // disabled
+            scrollToEndAutoGetMovie();
+        }
 
         // load image base url
         new GetImgeBaseUrlTask() {
@@ -122,7 +118,12 @@ public class GenreActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(DiscoverMovie discoverMovie) {
                 if (discoverMovie != null) {
-                    mTotalPage = discoverMovie.total_pages;
+                    if (mTotalPage <= 0) {
+                        Log.d(TAG, "total pages: " + discoverMovie.total_pages
+                                + ", total results: + " + discoverMovie.total_results);
+                        mTotalPage = discoverMovie.total_pages;
+                    }
+                    Log.d(TAG, "current page: " + discoverMovie.page + ", page size: " + discoverMovie.results.length);
                     mMovieAdapter.addMovies(discoverMovie.results);
                 }
                 mIsLoadingMovie = false;
@@ -130,32 +131,56 @@ public class GenreActivity extends AppCompatActivity {
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, mNextMoviePage++);
     }
 
-    public static class DiscoverMovieAdapter extends RecyclerView.Adapter<DiscoverMovieAdapter.ViewHolder> {
+    private void scrollToEndAutoGetMovie() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!recyclerView.canScrollVertically(1)) {
+                    Log.d(TAG, "scroll to bottom");
+                    getMoreMovie();
+                }
+            }
+        });
+    }
+
+    public class DiscoverMovieAdapter extends RecyclerView.Adapter<DiscoverMovieAdapter.ViewHolder> {
 
         private List<DiscoverMovie.Result> mMovieList = new ArrayList<>();
         private String mImageBaseUrl;
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder {
             private ViewGroup mContainer;
+            private ViewGroup mMovieContainer;
             private ImageView mImage;
             private TextView mText1;
             private TextView mText2;
             private TextView mText3;
+            private ViewGroup mGetMoreContainer;
             private MovieOnClickListener mMovieOnClickListener;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 mContainer = (ViewGroup) itemView;
+                mMovieContainer = (ViewGroup) itemView.findViewById(R.id.movie_container);
                 mImage = (ImageView) itemView.findViewById(R.id.movie_image);
                 mText1 = (TextView) itemView.findViewById(R.id.movie_text_1);
                 mText2 = (TextView) itemView.findViewById(R.id.movie_text_2);
                 mText3 = (TextView) itemView.findViewById(R.id.movie_text_3);
                 mMovieOnClickListener = new MovieOnClickListener(itemView.getContext());
-                mContainer.setOnClickListener(mMovieOnClickListener);
+                mMovieContainer.setOnClickListener(mMovieOnClickListener);
+
+                mGetMoreContainer = (ViewGroup) itemView.findViewById(R.id.get_more_container);
+                mGetMoreContainer.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getMoreMovie();
+                    }
+                });
             }
         }
 
-        private static class MovieOnClickListener implements View.OnClickListener {
+        private class MovieOnClickListener implements View.OnClickListener {
             private int mMovieId;
             private final Intent mLaunchIntent;
 
@@ -183,6 +208,15 @@ public class GenreActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(DiscoverMovieAdapter.ViewHolder holder, int position) {
+            if (!isAllPagesDownloaded() && position == getItemCount() - 1 /* last item */) {
+                holder.mMovieContainer.setVisibility(View.GONE);
+                holder.mGetMoreContainer.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            holder.mMovieContainer.setVisibility(View.VISIBLE);
+            holder.mGetMoreContainer.setVisibility(View.GONE);
+
             Context context = holder.mContainer.getContext();
             DiscoverMovie.Result movie = mMovieList.get(position);
             if (!TextUtils.isEmpty(mImageBaseUrl)) {
@@ -201,7 +235,13 @@ public class GenreActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mMovieList.size();
+            if (isAllPagesDownloaded()) {
+                return mMovieList.size();
+            } else if (mMovieList.size() > 0) {
+                return mMovieList.size() + 1;
+            } else {
+                return 0;
+            }
         }
 
         public void addMovies(DiscoverMovie.Result[] movies) {
@@ -212,6 +252,10 @@ public class GenreActivity extends AppCompatActivity {
         public void setImageBaseUrl(String imageBaseUrl){
             mImageBaseUrl = imageBaseUrl;
             notifyDataSetChanged();
+        }
+
+        private boolean isAllPagesDownloaded() {
+            return mTotalPage > 0 && mNextMoviePage == mTotalPage;
         }
     }
 }
