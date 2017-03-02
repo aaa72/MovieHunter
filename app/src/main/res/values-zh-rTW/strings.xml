@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">電影獵人</string>
     <string name="score">分數</string>
+    <string name="action_settings">設定</string>
+    <string name="action_about">關於</string>
+    <string name="genre">類型</string>
+    <string name="my_collection">我的收藏</string>
 </resources>

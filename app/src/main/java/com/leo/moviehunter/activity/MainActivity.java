@@ -1,36 +1,31 @@
 package com.leo.moviehunter.activity;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.leo.moviehunter.R;
-import com.leo.moviehunter.tmdb.response.Genre;
-import com.leo.moviehunter.tmdb.response.GetGenres;
-import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
+import com.leo.moviehunter.fragment.GenreMainFragment;
 import com.leo.moviehunter.util.Log;
-import com.leo.moviehunter.util.MHConstants;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final int DRAWER_GRAVITY = Gravity.START;
 
-    private RecyclerView mRecyclerView;
-    private GenresAdapter mGenresAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,108 +34,77 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        mLayoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mGenresAdapter = new GenresAdapter();
-        mRecyclerView.setAdapter(mGenresAdapter);
-
-        TMDBServiceManager.getTMDBService().getGenres().enqueue(new Callback<GetGenres>() {
-            @Override
-            public void onResponse(Call<GetGenres> call, Response<GetGenres> response) {
-                if (response.isSuccessful()) {
-                    GetGenres body = response.body();
-                    if (body != null) {
-                        Log.w(TAG, "getGenres success");
-                        mGenresAdapter.setGenres(body.genres);
-                    } else {
-                        Log.w(TAG, "getGenres fail by response.body()");
-                    }
-                } else {
-                    Log.w(TAG, "getGenres fail by code: " + response.code());
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mDrawerList = (ListView) findViewById(R.id.drawer_list);
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1,
+                new String[] {
+                        getString(R.string.genre),        // 0
+                        getString(R.string.my_collection)   // 1
                 }
-            }
+                ));
+        mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
 
-            @Override
-            public void onFailure(Call<GetGenres> call, Throwable t) {
-                Log.w(TAG, "getGenres onFailure", t);
-            }
-        });
-    }
-
-    public static class GenresAdapter extends RecyclerView.Adapter<GenresAdapter.ViewHolder> {
-        private Genre[] mGenres;
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            private ViewGroup mContainerView;
-            private ImageView mImageView;
-            private TextView mTextView;
-            private GenreOnClickListener mGenreOnClickListener;
-
-            public ViewHolder(ViewGroup container) {
-                super(container);
-                mContainerView = container;
-                mImageView = (ImageView) container.findViewById(R.id.genre_image);
-                mTextView = (TextView) container.findViewById(R.id.genre_text);
-
-                mGenreOnClickListener = new GenreOnClickListener(container.getContext());
-                mContainerView.setOnClickListener(mGenreOnClickListener);
-            }
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflate = LayoutInflater.from(parent.getContext());
-            ViewGroup layout = (ViewGroup) inflate.inflate(R.layout.genre_grid_item, null);
-            return new ViewHolder(layout);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            if (mGenres != null) {
-                holder.mTextView.setText(mGenres[position].name);
-                holder.mGenreOnClickListener.setGenreId(mGenres[position].id);
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return mGenres != null ? mGenres.length : 0;
-        }
-
-        public void setGenres(Genre[] genres) {
-            mGenres = genres;
-            notifyDataSetChanged();
-        }
-
-        private static class GenreOnClickListener implements OnClickListener {
-            private int mGenreId;
-            private final Intent mLaunchIntent;
-
-            public GenreOnClickListener(Context context) {
-                mLaunchIntent = new Intent(context, GenreActivity.class);
-            }
-
-            public  void setGenreId(int id) {
-                mGenreId = id;
-            }
-
+        Toolbar toolBar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolBar);
+        toolBar.setNavigationIcon(android.R.drawable.btn_dialog);
+        toolBar.setLogo(R.mipmap.ic_launcher);
+        toolBar.setOnMenuItemClickListener(mOnMenuItemClick);
+        toolBar.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLaunchIntent.putExtra(MHConstants.BUNDLE_KEY_GENRE_ID, mGenreId);
-                v.getContext().startActivity(mLaunchIntent);
+                mDrawerLayout.openDrawer(DRAWER_GRAVITY);
             }
+        });
+        toolBar.setNavigationOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.add(R.id.frame, new GenreMainFragment());
+        transaction.commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    private final Toolbar.OnMenuItemClickListener mOnMenuItemClick = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+            }
+            return true;
+        }
+    };
+
+    private final OnItemClickListener mDrawerItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.d(TAG, "onItemClick() - position: " + position);
+            switch(position) {
+                case 0:
+                    clearAllFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.add(new GenreMainFragment(), null);
+                    break;
+
+                case 1:
+                    break;
+            }
+            mDrawerLayout.closeDrawer(DRAWER_GRAVITY);
+        }
+    };
+
+    private void clearAllFragment() {
+        FragmentManager fm = getFragmentManager();
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
         }
     }
 }

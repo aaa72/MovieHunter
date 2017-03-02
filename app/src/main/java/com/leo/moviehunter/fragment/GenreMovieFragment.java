@@ -1,14 +1,14 @@
-package com.leo.moviehunter.activity;
+package com.leo.moviehunter.fragment;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +34,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class GenreActivity extends AppCompatActivity {
-    private static final String TAG = "GenreActivity";
+public class GenreMovieFragment extends Fragment {
+    private static final String TAG = "GenreMovieFragment";
 
     private RecyclerView mRecyclerView;
     private DiscoverMovieAdapter mMovieAdapter;
@@ -44,21 +44,43 @@ public class GenreActivity extends AppCompatActivity {
     private int mNextMoviePage = 1;
     private int mTotalPage = 0;
     private boolean mIsLoadingMovie = false;
+    private String mImageBaseUrl;
+    private final List<DiscoverMovie.Result> mMovieList = new ArrayList<>();
+
+    public static GenreMovieFragment newInstance(int genreId) {
+        GenreMovieFragment fragment = new GenreMovieFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(MHConstants.BUNDLE_KEY_GENRE_ID, genreId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
 
         mGenreId = getGenreId();
 
-        setContentView(R.layout.activity_genre);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        // load image base url
+        new GetImgeBaseUrlTask() {
+            @Override
+            public void onGetUrl(String url) {
+                mImageBaseUrl = url;
+                getMoreMovie();
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+    }
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
+
+        View root = inflater.inflate(R.layout.fragment_genre_movie, container, false);
+
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mMovieAdapter = new DiscoverMovieAdapter();
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -68,18 +90,11 @@ public class GenreActivity extends AppCompatActivity {
             scrollToEndAutoGetMovie();
         }
 
-        // load image base url
-        new GetImgeBaseUrlTask() {
-            @Override
-            public void onGetUrl(String url) {
-                mMovieAdapter.setImageBaseUrl(url);
-                getMoreMovie();
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        return root;
     }
 
     private int getGenreId() {
-        return getIntent() != null ? getIntent().getIntExtra(MHConstants.BUNDLE_KEY_GENRE_ID, -1) : -1;
+        return getArguments() != null ? getArguments().getInt(MHConstants.BUNDLE_KEY_GENRE_ID) : -1;
     }
 
     @UiThread
@@ -124,7 +139,12 @@ public class GenreActivity extends AppCompatActivity {
                         mTotalPage = discoverMovie.total_pages;
                     }
                     Log.d(TAG, "current page: " + discoverMovie.page + ", page size: " + discoverMovie.results.length);
-                    mMovieAdapter.addMovies(discoverMovie.results);
+
+                    mMovieList.addAll(Arrays.asList(discoverMovie.results));
+
+                    if (mMovieAdapter != null) {
+                        mMovieAdapter.notifyDataSetChanged();
+                    }
                 }
                 mIsLoadingMovie = false;
             }
@@ -144,11 +164,7 @@ public class GenreActivity extends AppCompatActivity {
         });
     }
 
-    public class DiscoverMovieAdapter extends RecyclerView.Adapter<DiscoverMovieAdapter.ViewHolder> {
-
-        private List<DiscoverMovie.Result> mMovieList = new ArrayList<>();
-        private String mImageBaseUrl;
-
+    private class DiscoverMovieAdapter extends RecyclerView.Adapter<DiscoverMovieAdapter.ViewHolder> {
         public class ViewHolder extends RecyclerView.ViewHolder {
             private ViewGroup mContainer;
             private ViewGroup mMovieContainer;
@@ -167,7 +183,7 @@ public class GenreActivity extends AppCompatActivity {
                 mText1 = (TextView) itemView.findViewById(R.id.movie_text_1);
                 mText2 = (TextView) itemView.findViewById(R.id.movie_text_2);
                 mText3 = (TextView) itemView.findViewById(R.id.movie_text_3);
-                mMovieOnClickListener = new MovieOnClickListener(itemView.getContext());
+                mMovieOnClickListener = new MovieOnClickListener();
                 mMovieContainer.setOnClickListener(mMovieOnClickListener);
 
                 mGetMoreContainer = (ViewGroup) itemView.findViewById(R.id.get_more_container);
@@ -182,11 +198,6 @@ public class GenreActivity extends AppCompatActivity {
 
         private class MovieOnClickListener implements View.OnClickListener {
             private int mMovieId;
-            private final Intent mLaunchIntent;
-
-            public MovieOnClickListener(Context context) {
-                mLaunchIntent = new Intent(context, MovieDetailActivity.class);
-            }
 
             public  void setMovieId(int id) {
                 mMovieId = id;
@@ -194,8 +205,10 @@ public class GenreActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                mLaunchIntent.putExtra(MHConstants.BUNDLE_KEY_MOVIE_ID, mMovieId);
-                v.getContext().startActivity(mLaunchIntent);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame, MovieDetailFragment.newInstance(mMovieId));
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         }
 
@@ -242,16 +255,6 @@ public class GenreActivity extends AppCompatActivity {
             } else {
                 return 0;
             }
-        }
-
-        public void addMovies(DiscoverMovie.Result[] movies) {
-            mMovieList.addAll(Arrays.asList(movies));
-            notifyDataSetChanged();
-        }
-
-        public void setImageBaseUrl(String imageBaseUrl){
-            mImageBaseUrl = imageBaseUrl;
-            notifyDataSetChanged();
         }
 
         private boolean isAllPagesDownloaded() {
