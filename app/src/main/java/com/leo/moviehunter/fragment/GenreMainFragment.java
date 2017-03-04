@@ -31,6 +31,11 @@ public class GenreMainFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private Genre[] mGenres;
 
+    public static GenreMainFragment newInstance() {
+        GenreMainFragment fragment = new GenreMainFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

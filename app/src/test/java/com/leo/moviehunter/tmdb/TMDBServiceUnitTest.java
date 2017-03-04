@@ -6,8 +6,9 @@ import com.leo.moviehunter.tmdb.response.Genre;
 import com.leo.moviehunter.tmdb.response.GetConfiguration;
 import com.leo.moviehunter.tmdb.response.GetGenres;
 import com.leo.moviehunter.tmdb.response.MovieDetail;
+import com.leo.moviehunter.tmdb.response.MovieResult;
+import com.leo.moviehunter.tmdb.response.NowPlaying;
 import com.leo.moviehunter.tmdb.response.SearchMovie;
-import com.leo.moviehunter.tmdb.response.SearchMovie.Results;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
 
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class TMDBServiceUnitTest {
         System.out.println("response successful: " + response.isSuccessful());
 
         SearchMovie searchMovie = response.body();
-        for (Results result : searchMovie.results) {
+        for (MovieResult result : searchMovie.results) {
             System.out.println("title: " + result.title + ", overview: " + result.overview);
         }
 
@@ -69,8 +70,7 @@ public class TMDBServiceUnitTest {
     public void discoverMovie() throws Exception {
         System.out.println("discoverMovie");
 
-        Call<DiscoverMovie> call = mService.discoverMovie(Locale.getDefault().getCountry()
-                , TMDBConstants.SortBy.popularity.desc(), true, 1, "53");
+        Call<DiscoverMovie> call = mService.discoverMovie(TMDBConstants.SortBy.popularity.desc(), true, 1, "53");
 
         Response<DiscoverMovie> response = call.execute();
 
@@ -78,7 +78,7 @@ public class TMDBServiceUnitTest {
 
         DiscoverMovie discoverMovie = response.body();
         System.out.println(discoverMovie.page + "/" + discoverMovie.total_pages);
-        for (DiscoverMovie.Result result : discoverMovie.results) {
+        for (MovieResult result : discoverMovie.results) {
             System.out.println("id: " + result.id + ", title: " + result.title + ", ori title: " + result.original_title);
         }
 
@@ -113,6 +113,22 @@ public class TMDBServiceUnitTest {
 
         MovieDetail movieDetail = response.body();
         System.out.println(new Gson().toJson(movieDetail));
+
+        assertTrue(response.isSuccessful());
+    }
+
+    @Test
+    public void getNowPlaying() throws Exception {
+        System.out.println("getNowPlaying");
+
+        Call<NowPlaying> call = mService.getNowPlaying(1);
+
+        Response<NowPlaying> response = call.execute();
+
+        System.out.println("response successful: " + response.isSuccessful());
+
+        NowPlaying body = response.body();
+        System.out.println(new Gson().toJson(body));
 
         assertTrue(response.isSuccessful());
     }

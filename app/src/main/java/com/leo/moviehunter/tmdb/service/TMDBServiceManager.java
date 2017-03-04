@@ -5,6 +5,7 @@ import com.leo.moviehunter.tmdb.response.DiscoverMovie;
 import com.leo.moviehunter.tmdb.response.GetConfiguration;
 import com.leo.moviehunter.tmdb.response.GetGenres;
 import com.leo.moviehunter.tmdb.response.MovieDetail;
+import com.leo.moviehunter.tmdb.response.NowPlaying;
 import com.leo.moviehunter.tmdb.response.SearchMovie;
 
 import java.io.IOException;
@@ -57,6 +58,7 @@ public class TMDBServiceManager {
             HttpUrl url = originalHttpUrl.newBuilder()
                     .addQueryParameter(TMDBConstants.TMDB_PARAM_KEY_API_KEY, TMDBConstants.TMDB_API_KEY)
                     .addQueryParameter(TMDBConstants.TMDB_PARAM_KEY_LANGUAGE, Locale.getDefault().getLanguage())
+                    .addQueryParameter(TMDBConstants.TMDB_PARAM_KEY_REGION, Locale.getDefault().getCountry())
                     .build();
             Request.Builder requestBuilder = original.newBuilder()
                     .url(url);
@@ -67,8 +69,7 @@ public class TMDBServiceManager {
     public interface TMDBService {
 
         @GET("discover/movie")
-        Call<DiscoverMovie> discoverMovie(@Query("region") String region,
-                                          @Query("sort_by") String sort_by,
+        Call<DiscoverMovie> discoverMovie(@Query("sort_by") String sort_by,
                                           @Query("include_adult") boolean include_adult,
                                           @Query("page") int page,
                                           @Query("with_genres") String with_genres
@@ -91,5 +92,7 @@ public class TMDBServiceManager {
         @GET("movie/{movie_id}")
         Call<MovieDetail> getMovieDetail(@Path("movie_id") int movieId);
 
+        @GET("movie/now_playing")
+        Call<NowPlaying> getNowPlaying(@Query("page")int page);
     }
 }

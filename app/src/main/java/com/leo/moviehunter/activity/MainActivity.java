@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.fragment.GenreMainFragment;
+import com.leo.moviehunter.fragment.NowPlayingFragment;
 import com.leo.moviehunter.util.Log;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,12 +36,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
         mDrawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1,
                 new String[] {
-                        getString(R.string.genre),        // 0
-                        getString(R.string.my_collection)   // 1
+                        getString(R.string.genre),              // 0
+                        getString(R.string.now_playing),        // 1
+                        getString(R.string.my_collection),      // 2
                 }
                 ));
         mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.add(R.id.frame, new GenreMainFragment());
+        transaction.add(R.id.frame, GenreMainFragment.newInstance());
         transaction.commit();
     }
 
@@ -88,14 +90,21 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Log.d(TAG, "onItemClick() - position: " + position);
             switch(position) {
-                case 0:
+                case 0: {
                     clearAllFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.add(new GenreMainFragment(), null);
-                    break;
+                    transaction.replace(R.id.frame, GenreMainFragment.newInstance());
+                    transaction.commit();
+                }
+                break;
 
-                case 1:
-                    break;
+                case 1: {
+                    clearAllFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frame, NowPlayingFragment.newInstance());
+                    transaction.commit();
+                }
+                break;
             }
             mDrawerLayout.closeDrawer(DRAWER_GRAVITY);
         }

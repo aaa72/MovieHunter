@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.tmdb.TMDBConstants;
 import com.leo.moviehunter.tmdb.response.DiscoverMovie;
+import com.leo.moviehunter.tmdb.response.MovieResult;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
 import com.leo.moviehunter.util.GetImgeBaseUrlTask;
 import com.leo.moviehunter.util.Log;
@@ -45,7 +46,7 @@ public class GenreMovieFragment extends Fragment {
     private int mTotalPage = 0;
     private boolean mIsLoadingMovie = false;
     private String mImageBaseUrl;
-    private final List<DiscoverMovie.Result> mMovieList = new ArrayList<>();
+    private final List<MovieResult> mMovieList = new ArrayList<>();
 
     public static GenreMovieFragment newInstance(int genreId) {
         GenreMovieFragment fragment = new GenreMovieFragment();
@@ -111,8 +112,8 @@ public class GenreMovieFragment extends Fragment {
         new AsyncTask<Integer, Void, DiscoverMovie>() {
             @Override
             protected DiscoverMovie doInBackground(Integer... params) {
-                Call<DiscoverMovie> call = TMDBServiceManager.getTMDBService().discoverMovie(null
-                        , TMDBConstants.SortBy.popularity.desc()
+                Call<DiscoverMovie> call = TMDBServiceManager.getTMDBService().discoverMovie(
+                        TMDBConstants.SortBy.popularity.desc()
                         , true
                         , params[0]
                         , String.valueOf(mGenreId)
@@ -231,10 +232,10 @@ public class GenreMovieFragment extends Fragment {
             holder.mGetMoreContainer.setVisibility(View.GONE);
 
             Context context = holder.mContainer.getContext();
-            DiscoverMovie.Result movie = mMovieList.get(position);
+            MovieResult movie = mMovieList.get(position);
             if (!TextUtils.isEmpty(mImageBaseUrl)) {
                 Glide.with(context)
-                        .load(mImageBaseUrl + movie.backdrop_path)
+                        .load(mImageBaseUrl + movie.poster_path)
                         .placeholder(android.R.drawable.ic_dialog_alert)
                         .centerCrop()
                         .crossFade()

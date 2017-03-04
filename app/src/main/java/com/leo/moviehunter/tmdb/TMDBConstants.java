@@ -13,6 +13,7 @@ public interface TMDBConstants {
     // TMDB parameter key
     String TMDB_PARAM_KEY_API_KEY = "api_key";
     String TMDB_PARAM_KEY_LANGUAGE = "language";
+    String TMDB_PARAM_KEY_REGION = "region";
 
     // Image size
     String IMAGE_SIZE = "w342";

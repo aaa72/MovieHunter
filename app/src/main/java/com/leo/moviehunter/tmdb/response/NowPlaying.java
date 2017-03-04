@@ -1,8 +1,9 @@
 package com.leo.moviehunter.tmdb.response;
 
-public class DiscoverMovie {
+public class NowPlaying {
     public int page;
     public MovieResult[] results;
-    public int total_results;
+    public MovieDates dates;
     public int total_pages;
+    public int total_results;
 }
