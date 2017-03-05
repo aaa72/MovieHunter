@@ -18,14 +18,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.data.CollectionItem;
 import com.leo.moviehunter.tmdb.response.Genre;
 import com.leo.moviehunter.tmdb.response.GetGenres;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
 import com.leo.moviehunter.util.GetGenreCoverUrlTask;
 import com.leo.moviehunter.util.GetImgeBaseUrlTask;
 import com.leo.moviehunter.util.Log;
+import com.leo.moviehunter.util.MyCollectionHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,6 +64,23 @@ public class GenreMainFragment extends Fragment {
                 getGenres();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        List<CollectionItem> list = MyCollectionHelper.getMyCollection(getActivity());
+        if (list != null) {
+            for (CollectionItem item : list) {
+                Log.d(TAG, "item = " + item.getMovieId());
+            }
+        }
+
+        List<CollectionItem> list2 = new ArrayList<>();
+        CollectionItem item = new CollectionItem();
+        item.setMovieId(597);
+        list2.add(item);
+        item = new CollectionItem();
+        item.setMovieId(49047);
+        list2.add(item);
+
+        MyCollectionHelper.addMyCollection(getActivity(), list2);
     }
 
     @Nullable

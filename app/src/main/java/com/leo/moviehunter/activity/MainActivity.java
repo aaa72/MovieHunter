@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolBar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolBar);
         toolBar.setNavigationIcon(android.R.drawable.btn_dialog);
-        toolBar.setLogo(R.mipmap.ic_launcher);
+//        toolBar.setLogo(R.mipmap.ic_launcher);
         toolBar.setOnMenuItemClickListener(mOnMenuItemClick);
         toolBar.setOnClickListener(new OnClickListener() {
             @Override
