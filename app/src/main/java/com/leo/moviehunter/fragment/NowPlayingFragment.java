@@ -115,7 +115,7 @@ public class NowPlayingFragment extends Fragment {
                 if (nowPlaying != null) {
                     if (mTotalPage <= 0) {
                         Log.d(TAG, "total pages: " + nowPlaying.total_pages
-                                + ", total results: + " + nowPlaying.total_results);
+                                + ", total results: " + nowPlaying.total_results);
                         mTotalPage = nowPlaying.total_pages;
                     }
                     Log.d(TAG, "current page: " + nowPlaying.page + ", page size: " + nowPlaying.results.length);

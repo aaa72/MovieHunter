@@ -65,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        clearAllFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.add(R.id.frame, GenreMainFragment.newInstance());
+        transaction.replace(R.id.frame, GenreMainFragment.newInstance());
         transaction.commit();
     }
 

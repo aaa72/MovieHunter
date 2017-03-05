@@ -38,6 +38,7 @@ dependencies {
         exclude module: 'recyclerview-v7'
         exclude module: 'design'
     })
+    compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
 
     testCompile 'junit:junit:4.12'
     // mockito

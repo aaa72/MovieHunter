@@ -1,7 +1,7 @@
 package com.leo.moviehunter.util;
 
 public class Log {
-    private static final String TAG = "Movie Hunter";
+    private static final String TAG = "MovieHunter";
     private static final String TAG_SEP = ": ";
     private static final String PREFIX_SEP = "- ";
 
