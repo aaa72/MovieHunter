@@ -1,4 +1,4 @@
-package com.leo.moviehunter.util;
+package com.leo.moviehunter.task;
 
 import android.content.Context;
 import android.content.SharedPreferences;

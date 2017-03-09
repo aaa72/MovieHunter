@@ -13,16 +13,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.task.GetImageBaseUrlTask;
+import com.leo.moviehunter.task.GetNowPlayingTask;
 import com.leo.moviehunter.tmdb.response.NowPlaying;
-import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
-import com.leo.moviehunter.util.GetImgeBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MovieResultAdapter;
-
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 public class NowPlayingFragment extends Fragment {
     private static final String TAG = "NowPlayingFragment";
@@ -52,7 +47,7 @@ public class NowPlayingFragment extends Fragment {
         });
 
         // load image base url
-        new GetImgeBaseUrlTask() {
+        new GetImageBaseUrlTask() {
             @Override
             public void onGetUrl(String url) {
                 mAdapter.setImageBaseUrl(url);
@@ -93,25 +88,9 @@ public class NowPlayingFragment extends Fragment {
         }
         mIsLoadingMovie = true;
 
-        new AsyncTask<Integer, Void, NowPlaying>() {
+        new GetNowPlayingTask() {
             @Override
-            protected NowPlaying doInBackground(Integer... params) {
-                Call<NowPlaying> call = TMDBServiceManager.getTMDBService().getNowPlaying(params[0]);
-                try {
-                    Response<NowPlaying> response = call.execute();
-                    if (response.isSuccessful()) {
-                        return response.body();
-                    } else {
-                        Log.w(TAG, "getNowPlaying fail by code: " + response.code());
-                    }
-                } catch (IOException e) {
-                    Log.w(TAG, "getNowPlaying fail", e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(NowPlaying nowPlaying) {
+            public void onGetNowPlaying(NowPlaying nowPlaying) {
                 if (nowPlaying != null) {
                     if (mTotalPage <= 0) {
                         Log.d(TAG, "total pages: " + nowPlaying.total_pages

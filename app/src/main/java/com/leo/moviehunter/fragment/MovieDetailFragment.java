@@ -13,15 +13,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.task.GetMovieDetailTask;
 import com.leo.moviehunter.tmdb.response.MovieDetail;
-import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
-import com.leo.moviehunter.util.GetImgeBaseUrlTask;
+import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MovieDetailFragment extends Fragment {
     private static final String TAG = "MovieDetailFragment";
@@ -54,28 +50,19 @@ public class MovieDetailFragment extends Fragment {
         Log.d(TAG, "mMovieId: " + mMovieId);
 
         // load image base url
-        new GetImgeBaseUrlTask() {
+        new GetImageBaseUrlTask() {
             @Override
             public void onGetUrl(String url) {
                 mBaseImageUrl = url;
                 Log.d(TAG, "mBaseImageUrl: " + mBaseImageUrl);
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-                TMDBServiceManager.getTMDBService().getMovieDetail(mMovieId).enqueue(new Callback<MovieDetail>() {
-                    @Override
-                    public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
-                        if (response.isSuccessful()) {
-                            mMovieDetail = response.body();
-                            setByMovie();
-                        } else {
-                            Log.w(TAG, "getMovieDetail fail by code: " + response.code());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<MovieDetail> call, Throwable t) {
-                        Log.w(TAG, "getMovieDetail onFailure", t);
-                    }
-                });
+        new GetMovieDetailTask(mMovieId) {
+            @Override
+            protected void onGetMovieDetail(MovieDetail movieDetail) {
+                mMovieDetail = movieDetail;
+                setByMovie();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }

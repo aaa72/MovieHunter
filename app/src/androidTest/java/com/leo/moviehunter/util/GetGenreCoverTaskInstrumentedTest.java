@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.leo.moviehunter.fragment.GenreMainFragment;
 import com.leo.moviehunter.rule.FragmentTestRule;
+import com.leo.moviehunter.task.GetGenreCoverUrlTask;
 
 import org.junit.After;
 import org.junit.Before;

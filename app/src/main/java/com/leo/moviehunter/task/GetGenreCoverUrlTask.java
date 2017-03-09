@@ -1,4 +1,4 @@
-package com.leo.moviehunter.util;
+package com.leo.moviehunter.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import com.leo.moviehunter.tmdb.TMDBConstants;
 import com.leo.moviehunter.tmdb.response.DiscoverMovie;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
+import com.leo.moviehunter.util.Log;
+import com.leo.moviehunter.util.SimpleIdlingResource;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -47,10 +49,10 @@ public abstract class GetGenreCoverUrlTask extends AsyncTask<Void, Void, String>
             if (response.isSuccessful()) {
                 return response.body().results[0].poster_path;
             } else {
-                Log.w(TAG, "GetGenreCoverUrlTask fail");
+                Log.w(TAG, "discoverMovie fail");
             }
         } catch (Exception e) {
-            Log.w(TAG, "GetGenreCoverUrlTask fail", e);
+            Log.w(TAG, "discoverMovie fail", e);
         }
         return null;
     }
@@ -66,5 +68,5 @@ public abstract class GetGenreCoverUrlTask extends AsyncTask<Void, Void, String>
         mSimpleIdlingResource.setIdleState(false);
     }
 
-    abstract public void onGetUrl(int genreId, String url);
+    abstract protected void onGetUrl(int genreId, String url);
 }

@@ -3,6 +3,8 @@ package com.leo.moviehunter.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.leo.moviehunter.task.GetGenreCoverUrlTask;
+
 import junit.framework.Assert;
 
 import org.junit.Rule;

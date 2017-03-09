@@ -12,17 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.data.user.WatchItem;
+import com.leo.moviehunter.task.DiscoverMoreMovieTask;
+import com.leo.moviehunter.task.GetWatchListTask;
 import com.leo.moviehunter.tmdb.TMDBConstants;
 import com.leo.moviehunter.tmdb.response.DiscoverMovie;
-import com.leo.moviehunter.tmdb.response.MovieResult;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
-import com.leo.moviehunter.util.GetImgeBaseUrlTask;
+import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 import com.leo.moviehunter.util.MovieResultAdapter;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -37,6 +39,8 @@ public class GenreMovieFragment extends Fragment {
     private int mNextMoviePage = 1;
     private int mTotalPage = 0;
     private boolean mIsLoadingMovie = false;
+    private List<WatchItem> mWatchList;
+    private DiscoverMoreMovieTask mDiscoverMoreTask;
 
     public static GenreMovieFragment newInstance(int genreId) {
         GenreMovieFragment fragment = new GenreMovieFragment();
@@ -60,13 +64,23 @@ public class GenreMovieFragment extends Fragment {
         });
 
         // load image base url
-        new GetImgeBaseUrlTask() {
+        new GetImageBaseUrlTask() {
             @Override
             public void onGetUrl(String url) {
                 mAdapter.setImageBaseUrl(url);
-                getMoreMovie();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        // get watch list
+        new GetWatchListTask(getActivity()) {
+            @Override
+            public void onGetWatchList(List<WatchItem> list) {
+                mWatchList = list;
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        // get movie list
+        getMoreMovie();
     }
 
     @Nullable
@@ -105,30 +119,9 @@ public class GenreMovieFragment extends Fragment {
         }
         mIsLoadingMovie = true;
 
-        new AsyncTask<Integer, Void, DiscoverMovie>() {
+        new DiscoverMoreMovieTask(mGenreId) {
             @Override
-            protected DiscoverMovie doInBackground(Integer... params) {
-                Call<DiscoverMovie> call = TMDBServiceManager.getTMDBService().discoverMovie(
-                        TMDBConstants.SortBy.popularity.desc()
-                        , true
-                        , params[0]
-                        , String.valueOf(mGenreId)
-                );
-                try {
-                    Response<DiscoverMovie> response = call.execute();
-                    if (response.isSuccessful()) {
-                        return response.body();
-                    } else {
-                        Log.w(TAG, "discoverMovie fail by code: " + response.code());
-                    }
-                } catch (IOException e) {
-                    Log.w(TAG, "discoverMovie fail", e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(DiscoverMovie discoverMovie) {
+            public void onGetDiscoverMovie(DiscoverMovie discoverMovie) {
                 if (discoverMovie != null) {
                     if (mTotalPage <= 0) {
                         Log.d(TAG, "total pages: " + discoverMovie.total_pages

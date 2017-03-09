@@ -41,7 +41,7 @@ public class UserDataHelper {
         return null;
     }
 
-    private static int[] getGenreIds(Context context, int movieId) {
+    public static int[] getGenreIds(Context context, int movieId) {
         Cursor cursor = null;
         try {
             cursor = context.getContentResolver().query(UserDataStore.URI_MOVIE_GENRE, null, TableMovieGenre.MovieId + "=?", new String[] {String.valueOf(movieId)}, null);

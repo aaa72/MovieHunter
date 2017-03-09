@@ -1,10 +1,10 @@
-package com.leo.moviehunter.util;
+package com.leo.moviehunter.task;
 
 import android.os.AsyncTask;
 
 import com.leo.moviehunter.tmdb.service.TMDBConfiguration;
 
-public abstract class GetImgeBaseUrlTask extends AsyncTask<Void, Void, String> {
+public abstract class GetImageBaseUrlTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
@@ -16,5 +16,5 @@ public abstract class GetImgeBaseUrlTask extends AsyncTask<Void, Void, String> {
         onGetUrl(imageBaseUrl);
     }
 
-    abstract public void onGetUrl(String url);
+    abstract protected void onGetUrl(String url);
 }

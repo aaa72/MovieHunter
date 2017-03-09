@@ -18,18 +18,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.task.GetGenreCoverUrlTask;
+import com.leo.moviehunter.task.GetGenresTask;
+import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.tmdb.response.Genre;
 import com.leo.moviehunter.tmdb.response.GetGenres;
-import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
-import com.leo.moviehunter.util.GetGenreCoverUrlTask;
-import com.leo.moviehunter.util.GetImgeBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 
 import java.util.HashMap;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class GenreMainFragment extends Fragment {
     private static final String TAG = "GenreMainFragment";
@@ -52,12 +48,21 @@ public class GenreMainFragment extends Fragment {
 
         mGenresAdapter = new GenresAdapter();
 
-        new GetImgeBaseUrlTask() {
+        new GetImageBaseUrlTask() {
             @Override
             public void onGetUrl(String url) {
                 mImageBaseUrl = url;
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-                getGenres();
+
+        new GetGenresTask() {
+            @Override
+            public void getGenres(GetGenres getGenres) {
+                mGenres = getGenres.genres;
+                mGenresAdapter.notifyDataSetChanged();
+
+                getGenreCover();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
@@ -78,33 +83,6 @@ public class GenreMainFragment extends Fragment {
         mRecyclerView.setAdapter(mGenresAdapter);
 
         return root;
-    }
-
-    private void getGenres() {
-        TMDBServiceManager.getTMDBService().getGenres().enqueue(new Callback<GetGenres>() {
-            @Override
-            public void onResponse(Call<GetGenres> call, Response<GetGenres> response) {
-                if (response.isSuccessful()) {
-                    GetGenres body = response.body();
-                    if (body != null) {
-                        Log.w(TAG, "getGenres success");
-                        mGenres = body.genres;
-                        mGenresAdapter.notifyDataSetChanged();
-
-                        getGenreCover();
-                    } else {
-                        Log.w(TAG, "getGenres fail by response.body()");
-                    }
-                } else {
-                    Log.w(TAG, "getGenres fail by code: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetGenres> call, Throwable t) {
-                Log.w(TAG, "getGenres onFailure", t);
-            }
-        });
     }
 
     private void getGenreCover() {
