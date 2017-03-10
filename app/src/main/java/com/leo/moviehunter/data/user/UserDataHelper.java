@@ -105,4 +105,26 @@ public class UserDataHelper {
             Log.w(TAG, "" + e, e);
         }
     }
+
+    public static int deleteFromWatchList(Context context, List<WatchItem> list) {
+        if (list == null || list.size() <= 0) {
+            return 0;
+        }
+
+        int count = 0;
+        for (WatchItem watchItem : list) {
+            int ret = context.getContentResolver().delete(UserDataStore.URI_WATCH_LIST,
+                    TableWatchList.MovieId + "=" + watchItem.getMovieId(), null);
+            if (ret > 0) {
+                count++;
+                deleteFromMovieGenre(context, watchItem.getMovieId());
+            }
+        }
+        return count;
+    }
+
+    public static int deleteFromMovieGenre(Context context, int movieId) {
+        return context.getContentResolver().delete(UserDataStore.URI_MOVIE_GENRE,
+                TableMovieGenre.MovieId + "=" + movieId, null);
+    }
 }

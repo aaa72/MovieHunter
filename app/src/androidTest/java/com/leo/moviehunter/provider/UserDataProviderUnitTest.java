@@ -68,6 +68,12 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         // Get
         List<WatchItem> list2 = UserDataHelper.getWatchList(getMockContext());
         assertTrue(list2 != null && list2.size() == ret);
+
+        // delete
+        ArrayList<WatchItem> delete = new ArrayList<>();
+        delete.add(list.get(0));
+        int delRet = UserDataHelper.deleteFromWatchList(getMockContext(), delete);
+        assertTrue(delRet == 1);
     }
 
     @Test
