@@ -22,6 +22,17 @@
         android:scaleType="fitXY"
         />
 
+    <ImageView
+        android:id="@+id/movie_status"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        />
+
     <TextView
         android:id="@+id/movie_text_1"
         android:layout_width="match_parent"
@@ -29,6 +40,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="3dp"
         android:layout_toRightOf="@id/movie_image"
+        android:layout_toLeftOf="@id/movie_status"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
@@ -37,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/movie_text_1"
+        android:layout_alignRight="@id/movie_text_1"
         android:layout_below="@id/movie_text_1"
         android:layout_marginTop="3dp"
         android:maxLines="1"
@@ -47,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/movie_text_2"
+        android:layout_alignRight="@id/movie_text_2"
         android:layout_below="@id/movie_text_2"
         android:layout_marginTop="3dp"
         android:ellipsize="end"

@@ -12,4 +12,15 @@ public class CommonUtil {
             }
         }
     }
+
+    public static String[] intArray2StringArray(int[] intAry) {
+        if (intAry == null) {
+            return null;
+        }
+        String[] strAry = new String[intAry.length];
+        for (int i = 0; i < intAry.length; i++) {
+            strAry[i] = String.valueOf(intAry[i]);
+        }
+        return strAry;
+    }
 }

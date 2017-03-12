@@ -2,13 +2,13 @@ package com.leo.moviehunter.data.user;
 
 public class WatchItem {
 
-    private int mMovieId;
+    private String mMovieId;
 
-    public int getMovieId() {
+    public String getMovieId() {
         return mMovieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(String movieId) {
         mMovieId = movieId;
     }
 
@@ -22,13 +22,13 @@ public class WatchItem {
         mAddedEpochTime = addedEpochTime;
     }
 
-    private int[] mGenreIds;
+    private String[] mGenreIds;
 
-    public int[] getGenreIds() {
+    public String[] getGenreIds() {
         return mGenreIds;
     }
 
-    public void setGenreIds(int[] genreId) {
+    public void setGenreIds(String[] genreId) {
         mGenreIds = genreId;
     }
 }

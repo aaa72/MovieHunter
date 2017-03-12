@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +31,14 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextContent;
 
     private MovieDetail mMovieDetail;
-    private int mMovieId = -1;
+    private String mMovieId;
     private String mBaseImageUrl;
     private boolean mViewReady;
 
-    public static MovieDetailFragment newInstance(int movieId) {
+    public static MovieDetailFragment newInstance(String movieId) {
         MovieDetailFragment fragment = new MovieDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(MHConstants.BUNDLE_KEY_MOVIE_ID, movieId);
+        bundle.putString(MHConstants.BUNDLE_KEY_MOVIE_ID, movieId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -48,6 +49,10 @@ public class MovieDetailFragment extends Fragment {
 
         mMovieId = getMovieId();
         Log.d(TAG, "mMovieId: " + mMovieId);
+        if (TextUtils.isEmpty(mMovieId)) {
+
+            return;
+        }
 
         // load image base url
         new GetImageBaseUrlTask() {
@@ -87,8 +92,8 @@ public class MovieDetailFragment extends Fragment {
         return root;
     }
 
-    private int getMovieId() {
-        return getArguments() != null ? getArguments().getInt(MHConstants.BUNDLE_KEY_MOVIE_ID) : -1;
+    private String getMovieId() {
+        return getArguments() != null ? getArguments().getString(MHConstants.BUNDLE_KEY_MOVIE_ID) : null;
     }
 
     @UiThread

@@ -215,13 +215,13 @@ public class UserDataProvider extends ContentProvider {
         switch (Matcher.values()[match]) {
             case WATCH_LIST: {
                 count = db.update(TableWatchList.TableName, values, selection, selectionArgs);
-                break;
             }
+            break;
 
             case MOVIE_GENRE: {
                 count = db.update(TableMovieGenre.TableName, values, selection, selectionArgs);
-                break;
             }
+            break;
         }
 
         if (count > 0) {
@@ -271,6 +271,7 @@ public class UserDataProvider extends ContentProvider {
                     db.endTransaction();
                 }
             }
+            break;
 
             case MOVIE_GENRE: {
                 db.beginTransaction();
@@ -291,6 +292,7 @@ public class UserDataProvider extends ContentProvider {
                     db.endTransaction();
                 }
             }
+            break;
         }
 
         return count;
@@ -328,17 +330,19 @@ public class UserDataProvider extends ContentProvider {
         }
 
         private final String SQL_CREATE_WATCH_LIST = "create table " + TableWatchList.TableName + "( "
-                + TableWatchList.MovieId + " integer primary key"
+                + "_id integer primary key"
+                + ", "
+                + TableWatchList.MovieId + " text unique not null"
                 + ", "
                 + TableWatchList.AddedEpochTime + " integer"
                 + ");";
 
         private final String SQL_CREATE_MOVIE_GENRE = "create table " + TableMovieGenre.TableName + "( "
-                + TableMovieGenre.MovieId + " integer"
+                + "_id integer primary key"
                 + ", "
-                + TableMovieGenre.GenreId + " integer"
+                + TableMovieGenre.MovieId + " text unique not null"
                 + ", "
-                + "primary key (" + TableMovieGenre.MovieId + ", " + TableMovieGenre.GenreId + ")"
+                + TableMovieGenre.GenreId + " text"
                 + ");";
     }
 }

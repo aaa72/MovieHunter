@@ -8,7 +8,7 @@ import com.leo.moviehunter.data.user.WatchItem;
 
 import java.util.List;
 
-public abstract class AddToWatchListTask extends AsyncTask<List<WatchItem>, Void, Void> {
+public abstract class AddToWatchListTask extends AsyncTask<List<WatchItem>, Void, List<WatchItem>> {
     private Context mContext;
 
     public AddToWatchListTask(Context context) {
@@ -16,15 +16,15 @@ public abstract class AddToWatchListTask extends AsyncTask<List<WatchItem>, Void
     }
 
     @Override
-    protected Void doInBackground(List<WatchItem>... params) {
-        UserDataHelper.addToWatchList(mContext, params[0]);
-        return null;
+    protected List<WatchItem> doInBackground(List<WatchItem>... params) {
+        int ret = UserDataHelper.addToWatchList(mContext, params[0]);
+        return ret > 0 ? params[0] : null;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        onDone();
+    protected void onPostExecute(List<WatchItem> addedList) {
+        onDone(addedList);
     }
 
-    abstract protected void onDone();
+    abstract protected void onDone(List<WatchItem> addedList);
 }

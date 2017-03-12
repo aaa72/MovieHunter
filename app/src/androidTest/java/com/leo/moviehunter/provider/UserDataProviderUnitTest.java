@@ -45,21 +45,21 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         WatchItem item;
         item = new WatchItem();
         ArrayList<WatchItem> list = new ArrayList<>();
-        item.setMovieId(1);
+        item.setMovieId("1");
         item.setAddedEpochTime(11111111);
-        item.setGenreIds(new int[] {1,2,3});
+        item.setGenreIds(new String[] {"1","2","3"});
         list.add(item);
 
         item = new WatchItem();
-        item.setMovieId(2);
+        item.setMovieId("2");
         item.setAddedEpochTime(22222222);
-        item.setGenreIds(new int[] {1,2});
+        item.setGenreIds(new String[] {"1","2"});
         list.add(item);
 
         item = new WatchItem();
-        item.setMovieId(3);
+        item.setMovieId("3");
         item.setAddedEpochTime(33333333);
-        item.setGenreIds(new int[] {2,3});
+        item.setGenreIds(new String[] {"2","3"});
         list.add(item);
 
         int ret = UserDataHelper.addToWatchList(getMockContext(), list);
@@ -70,21 +70,20 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         assertTrue(list2 != null && list2.size() == ret);
 
         // delete
-        ArrayList<WatchItem> delete = new ArrayList<>();
-        delete.add(list.get(0));
-        int delRet = UserDataHelper.deleteFromWatchList(getMockContext(), delete);
+        int delRet = UserDataHelper.deleteFromWatchList(getMockContext(), list.get(0).getMovieId());
         assertTrue(delRet == 1);
     }
 
     @Test
     public void testInsertWatchList() throws Exception {
-        final int movieId = 333;
+        final String movieId = "333";
 
         // insert normal item
         Uri uri = insertTestItem(movieId);
+        Log.d(TAG, "testInsertWatchList() - uri: " + uri);
         final long id = ContentUris.parseId(uri);
         Log.d(TAG, "testInsertWatchList() - movieId: " + movieId + ", uri id = " + id);
-        assertEquals(id, movieId);
+        assertTrue(id > 0);
 
         // insert duplication item
         Uri uri2 = insertTestItem(movieId);
@@ -94,7 +93,7 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
 
     @Test
     public void testUpdateWatchList() throws Exception {
-        final int movieId = 111;
+        final String movieId = "111";
         insertTestItem(movieId);
 
         // update normal item
@@ -103,13 +102,13 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         assertTrue(count > 0);
 
         // update non exist item
-        count = updateItem(222);
+        count = updateItem("222");
         assertEquals(count, 0);
     }
 
     @Test
     public void testDeleteWatchList() throws Exception {
-        final int movieId = 111;
+        final String movieId = "111";
         insertTestItem(movieId);
 
         // delete normal item
@@ -124,8 +123,8 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
 
     @Test
     public void testQueryWatchList() throws Exception {
-        insertTestItem(111);
-        insertTestItem(222);
+        insertTestItem("111");
+        insertTestItem("222");
 
         // query all
         Cursor cursor = getMockContentResolver().query(UserDataStore.URI_WATCH_LIST, null, null, null, null);
@@ -139,7 +138,7 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         assertTrue(cursor != null && cursor.getCount() == 1);
     }
 
-    private Uri insertTestItem(int movieId) {
+    private Uri insertTestItem(String movieId) {
         ContentValues values = new ContentValues();
         values.put(TableWatchList.MovieId, movieId);
         values.put(TableWatchList.AddedEpochTime, System.currentTimeMillis());
@@ -147,18 +146,18 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         return uri;
     }
 
-    private int updateItem(int movieId) {
+    private int updateItem(String movieId) {
         ContentValues values = new ContentValues();
         values.put(TableWatchList.AddedEpochTime, System.currentTimeMillis());
         String where = TableWatchList.MovieId + "=?";
-        String[] whereArgs = new String[] {String.valueOf(movieId)};
+        String[] whereArgs = new String[] {movieId};
         int count = getMockContentResolver().update(UserDataStore.URI_WATCH_LIST, values, where, whereArgs);
         return count;
     }
 
-    private int deleteItem(int movieId) {
+    private int deleteItem(String movieId) {
         String where = TableWatchList.MovieId + "=?";
-        String[] whereArgs = new String[] {String.valueOf(movieId)};
+        String[] whereArgs = new String[] {movieId};
         int count = getMockContentResolver().delete(UserDataStore.URI_WATCH_LIST, where, whereArgs);
         return count;
     }

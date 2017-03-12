@@ -15,9 +15,9 @@ import retrofit2.Response;
 public abstract class GetMovieDetailTask extends AsyncTask<Void, Void, MovieDetail> {
     private static final String TAG = "GetMovieDetailTask";
 
-    private final int mMovieId;
+    private final String mMovieId;
 
-    public GetMovieDetailTask(int movieId) {
+    public GetMovieDetailTask(String movieId) {
         mMovieId = movieId;
     }
 
@@ -25,7 +25,7 @@ public abstract class GetMovieDetailTask extends AsyncTask<Void, Void, MovieDeta
     @Override
     protected MovieDetail doInBackground(Void... params) {
 
-        Call<MovieDetail> call = TMDBServiceManager.getTMDBService().getMovieDetail(mMovieId);
+        Call<MovieDetail> call = TMDBServiceManager.getTMDBService().getMovieDetail(Integer.parseInt(mMovieId));
 
         try {
             Response<MovieDetail> response = call.execute();

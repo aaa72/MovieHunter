@@ -13,20 +13,24 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.data.Movie;
+import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetNowPlayingTask;
-import com.leo.moviehunter.tmdb.response.NowPlaying;
+import com.leo.moviehunter.task.GetWatchListTask;
 import com.leo.moviehunter.util.Log;
-import com.leo.moviehunter.util.MovieResultAdapter;
+import com.leo.moviehunter.widget.MovieAdapter;
+
+import java.util.List;
 
 public class NowPlayingFragment extends Fragment {
     private static final String TAG = "NowPlayingFragment";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private MovieResultAdapter mAdapter;
+    private MovieAdapter mAdapter;
     private int mNextMoviePage = 1;
-    private int mTotalPage = 0;
+    private int mTotalPages = 0;
     private boolean mIsLoadingMovie = false;
 
     public static NowPlayingFragment newInstance() {
@@ -38,8 +42,8 @@ public class NowPlayingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAdapter = new MovieResultAdapter(this);
-        mAdapter.setGetMoreMovieClickListenter(new OnClickListener() {
+        mAdapter = new MovieAdapter(this);
+        mAdapter.setGetMoreMovieClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 getMoreMovie();
@@ -52,6 +56,13 @@ public class NowPlayingFragment extends Fragment {
             public void onGetUrl(String url) {
                 mAdapter.setImageBaseUrl(url);
                 getMoreMovie();
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        new GetWatchListTask(getActivity()) {
+            @Override
+            protected void onGetWatchList(List<WatchItem> watchList) {
+                mAdapter.setWatchList(watchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
@@ -83,24 +94,26 @@ public class NowPlayingFragment extends Fragment {
             return;
         }
 
-        if (mTotalPage > 0 && mNextMoviePage >= mTotalPage) {
+        if (mTotalPages > 0 && mNextMoviePage >= mTotalPages) {
             return;
         }
         mIsLoadingMovie = true;
 
         new GetNowPlayingTask() {
             @Override
-            public void onGetNowPlaying(NowPlaying nowPlaying) {
-                if (nowPlaying != null) {
-                    if (mTotalPage <= 0) {
-                        Log.d(TAG, "total pages: " + nowPlaying.total_pages
-                                + ", total results: " + nowPlaying.total_results);
-                        mTotalPage = nowPlaying.total_pages;
-                    }
-                    Log.d(TAG, "current page: " + nowPlaying.page + ", page size: " + nowPlaying.results.length);
-
-                    mAdapter.addMovies(nowPlaying.results, nowPlaying.page < nowPlaying.total_pages);
+            public void onGetNowPlaying(Movie[] movies, int totalMovies, int page, int totalPages) {
+                if (mTotalPages != totalPages) {
+                    Log.d(TAG, "totalPages: " + totalPages + ", totalMovies: " + totalMovies);
+                    mTotalPages = totalPages;
                 }
+                Log.d(TAG, "current page: " + page + ", page size: " + movies.length);
+
+                mAdapter.addMovies(movies, page < totalPages);
+                mIsLoadingMovie = false;
+            }
+
+            @Override
+            protected void onFail(int code, String msg) {
                 mIsLoadingMovie = false;
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, mNextMoviePage++);

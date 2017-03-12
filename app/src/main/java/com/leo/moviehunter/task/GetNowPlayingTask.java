@@ -2,9 +2,11 @@ package com.leo.moviehunter.task;
 
 import android.os.AsyncTask;
 
+import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.tmdb.response.NowPlaying;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
 import com.leo.moviehunter.util.Log;
+import com.leo.moviehunter.util.TMDBUtil;
 
 import java.io.IOException;
 
@@ -32,9 +34,15 @@ public abstract class GetNowPlayingTask extends AsyncTask<Integer, Void, NowPlay
 
     @Override
     protected void onPostExecute(NowPlaying nowPlaying) {
-        onGetNowPlaying(nowPlaying);
+        if (nowPlaying == null) {
+            onFail(0, "");
+            return;
+        }
+        Movie[] movies = TMDBUtil.movieResults2Movies(nowPlaying.results);
+        onGetNowPlaying(movies, nowPlaying.total_results, nowPlaying.page, nowPlaying.total_pages);
     }
 
 
-    abstract protected void onGetNowPlaying(NowPlaying nowPlaying);
+    abstract protected void onGetNowPlaying(Movie[] movies, int totalMovies, int page, int totalPages);
+    abstract protected void onFail(int code, String msg);
 }

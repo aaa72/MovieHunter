@@ -21,9 +21,9 @@ public abstract class GetWatchListTask extends AsyncTask<Void, Void, List<WatchI
     }
 
     @Override
-    protected void onPostExecute(List<WatchItem> list) {
-        onGetWatchList(list);
+    protected void onPostExecute(List<WatchItem> watchList) {
+        onGetWatchList(watchList);
     }
 
-    abstract protected void onGetWatchList(List<WatchItem> list);
+    abstract protected void onGetWatchList(List<WatchItem> watchList);
 }

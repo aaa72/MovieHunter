@@ -5,5 +5,6 @@
     <string name="action_about">關於</string>
     <string name="genre">類型</string>
     <string name="now_playing">現正放映</string>
-    <string name="my_collection">我的收藏</string>
+    <string name="watch_list">待看清單</string>
+    <string name="watch_history">觀看紀錄</string>
 </resources>

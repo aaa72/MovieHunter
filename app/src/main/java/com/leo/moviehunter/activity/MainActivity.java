@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.fragment.GenreMainFragment;
+import com.leo.moviehunter.fragment.WatchListFragment;
 import com.leo.moviehunter.fragment.NowPlayingFragment;
 import com.leo.moviehunter.util.Log;
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 new String[] {
                         getString(R.string.genre),              // 0
                         getString(R.string.now_playing),        // 1
-                        getString(R.string.my_collection),      // 2
+                        getString(R.string.watch_list),      // 2
                 }
                 ));
         mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
@@ -103,6 +104,14 @@ public class MainActivity extends AppCompatActivity {
                     clearAllFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.frame, NowPlayingFragment.newInstance());
+                    transaction.commit();
+                }
+                break;
+
+                case 2: {
+                    clearAllFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frame, WatchListFragment.newInstance());
                     transaction.commit();
                 }
                 break;

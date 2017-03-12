@@ -26,9 +26,9 @@ public class UserDataHelper {
                 final int idxAddedEpochTime = cursor.getColumnIndexOrThrow(TableWatchList.AddedEpochTime);
                 for (cursor.moveToFirst() ; !cursor.isAfterLast() ; cursor.moveToNext()) {
                     WatchItem item = new WatchItem();
-                    item.setMovieId(cursor.getInt(idxMovieId));
+                    item.setMovieId(cursor.getString(idxMovieId));
                     item.setAddedEpochTime(cursor.getLong(idxAddedEpochTime));
-                    item.setGenreIds(getGenreIds(context, cursor.getInt(idxMovieId)));
+                    item.setGenreIds(getGenreIds(context, cursor.getString(idxMovieId)));
                     list.add(item);
                 }
                 return list;
@@ -41,16 +41,16 @@ public class UserDataHelper {
         return null;
     }
 
-    public static int[] getGenreIds(Context context, int movieId) {
+    public static String[] getGenreIds(Context context, String movieId) {
         Cursor cursor = null;
         try {
             cursor = context.getContentResolver().query(UserDataStore.URI_MOVIE_GENRE, null, TableMovieGenre.MovieId + "=?", new String[] {String.valueOf(movieId)}, null);
             if (cursor != null) {
                 final int idxGenreId = cursor.getColumnIndexOrThrow(TableMovieGenre.GenreId);
-                final int[] genreIds = new int[cursor.getCount()];
+                final String[] genreIds = new String[cursor.getCount()];
                 int i;
                 for (i = 0, cursor.moveToFirst() ; !cursor.isAfterLast() ; i++, cursor.moveToNext()) {
-                    genreIds[i] = cursor.getInt(idxGenreId);
+                    genreIds[i] = cursor.getString(idxGenreId);
                 }
                 return genreIds;
             }
@@ -88,7 +88,7 @@ public class UserDataHelper {
         return -1;
     }
 
-    public static void addToMovieGenre(Context context, int movieId, int[] genreIds) {
+    public static void addToMovieGenre(Context context, String movieId, String[] genreIds) {
         if (genreIds == null || genreIds.length <= 0) {
             return;
         }
@@ -106,25 +106,25 @@ public class UserDataHelper {
         }
     }
 
-    public static int deleteFromWatchList(Context context, List<WatchItem> list) {
-        if (list == null || list.size() <= 0) {
+    public static int deleteFromWatchList(Context context, String ...movieIds) {
+        if (movieIds == null || movieIds.length <= 0) {
             return 0;
         }
 
         int count = 0;
-        for (WatchItem watchItem : list) {
+        for (String movieId : movieIds) {
             int ret = context.getContentResolver().delete(UserDataStore.URI_WATCH_LIST,
-                    TableWatchList.MovieId + "=" + watchItem.getMovieId(), null);
+                    TableWatchList.MovieId + "=?", new String[] {movieId});
             if (ret > 0) {
                 count++;
-                deleteFromMovieGenre(context, watchItem.getMovieId());
+                deleteFromMovieGenre(context, movieId);
             }
         }
         return count;
     }
 
-    public static int deleteFromMovieGenre(Context context, int movieId) {
+    public static int deleteFromMovieGenre(Context context, String movieId) {
         return context.getContentResolver().delete(UserDataStore.URI_MOVIE_GENRE,
-                TableMovieGenre.MovieId + "=" + movieId, null);
+                TableMovieGenre.MovieId + "=?", new String[] {movieId});
     }
 }

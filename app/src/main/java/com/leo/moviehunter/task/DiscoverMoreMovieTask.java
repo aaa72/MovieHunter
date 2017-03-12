@@ -2,10 +2,12 @@ package com.leo.moviehunter.task;
 
 import android.os.AsyncTask;
 
+import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.tmdb.TMDBConstants;
 import com.leo.moviehunter.tmdb.response.DiscoverMovie;
 import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
 import com.leo.moviehunter.util.Log;
+import com.leo.moviehunter.util.TMDBUtil;
 
 import java.io.IOException;
 
@@ -44,8 +46,14 @@ public abstract class DiscoverMoreMovieTask extends AsyncTask<Integer, Void, Dis
 
     @Override
     protected void onPostExecute(DiscoverMovie discoverMovie) {
-        onGetDiscoverMovie(discoverMovie);
+        if (discoverMovie == null || discoverMovie.results == null) {
+            onFail(0, "");
+            return;
+        }
+        Movie[] movies = TMDBUtil.movieResults2Movies(discoverMovie.results);
+        onGetDiscoverMovie(movies, discoverMovie.total_results, discoverMovie.page, discoverMovie.total_pages);
     }
 
-    abstract protected void onGetDiscoverMovie(DiscoverMovie discoverMovie);
+    abstract protected void onGetDiscoverMovie(Movie[] movies, int totalMovies, int page, int totalPages);
+    abstract protected void onFail(int code, String msg);
 }

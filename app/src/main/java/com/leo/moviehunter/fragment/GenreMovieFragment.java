@@ -12,35 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.DiscoverMoreMovieTask;
-import com.leo.moviehunter.task.GetWatchListTask;
-import com.leo.moviehunter.tmdb.TMDBConstants;
-import com.leo.moviehunter.tmdb.response.DiscoverMovie;
-import com.leo.moviehunter.tmdb.service.TMDBServiceManager;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
+import com.leo.moviehunter.task.GetWatchListTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
-import com.leo.moviehunter.util.MovieResultAdapter;
+import com.leo.moviehunter.widget.MovieAdapter;
 
-import java.io.IOException;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 public class GenreMovieFragment extends Fragment {
     private static final String TAG = "GenreMovieFragment";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private MovieResultAdapter mAdapter;
+    private MovieAdapter mAdapter;
     private int mGenreId = -1;
     private int mNextMoviePage = 1;
-    private int mTotalPage = 0;
+    private int mTotalPages = 0;
     private boolean mIsLoadingMovie = false;
-    private List<WatchItem> mWatchList;
-    private DiscoverMoreMovieTask mDiscoverMoreTask;
 
     public static GenreMovieFragment newInstance(int genreId) {
         GenreMovieFragment fragment = new GenreMovieFragment();
@@ -55,8 +47,8 @@ public class GenreMovieFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mGenreId = getGenreId();
-        mAdapter = new MovieResultAdapter(this);
-        mAdapter.setGetMoreMovieClickListenter(new View.OnClickListener() {
+        mAdapter = new MovieAdapter(this);
+        mAdapter.setGetMoreMovieClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getMoreMovie();
@@ -74,8 +66,8 @@ public class GenreMovieFragment extends Fragment {
         // get watch list
         new GetWatchListTask(getActivity()) {
             @Override
-            public void onGetWatchList(List<WatchItem> list) {
-                mWatchList = list;
+            public void onGetWatchList(List<WatchItem> watchList) {
+                mAdapter.setWatchList(watchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
@@ -114,24 +106,26 @@ public class GenreMovieFragment extends Fragment {
             return;
         }
 
-        if (mTotalPage > 0 && mNextMoviePage >= mTotalPage) {
+        if (mTotalPages > 0 && mNextMoviePage >= mTotalPages) {
             return;
         }
         mIsLoadingMovie = true;
 
         new DiscoverMoreMovieTask(mGenreId) {
             @Override
-            public void onGetDiscoverMovie(DiscoverMovie discoverMovie) {
-                if (discoverMovie != null) {
-                    if (mTotalPage <= 0) {
-                        Log.d(TAG, "total pages: " + discoverMovie.total_pages
-                                + ", total results: " + discoverMovie.total_results);
-                        mTotalPage = discoverMovie.total_pages;
-                    }
-                    Log.d(TAG, "current page: " + discoverMovie.page + ", page size: " + discoverMovie.results.length);
-
-                    mAdapter.addMovies(discoverMovie.results, discoverMovie.page < discoverMovie.total_pages);
+            public void onGetDiscoverMovie(Movie[] movies, int page, int totalPages, int totalMovies) {
+                if (mTotalPages != totalPages) {
+                    Log.d(TAG, "totalPages: " + totalPages + ", totalMovies: " + totalMovies);
+                    mTotalPages = totalPages;
                 }
+                Log.d(TAG, "current page: " + page + ", page size: " + movies.length);
+
+                mAdapter.addMovies(movies, page < totalPages);
+                mIsLoadingMovie = false;
+            }
+
+            @Override
+            protected void onFail(int code, String msg) {
                 mIsLoadingMovie = false;
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, mNextMoviePage++);
