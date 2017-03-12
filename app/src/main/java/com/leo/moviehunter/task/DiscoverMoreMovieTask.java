@@ -17,9 +17,9 @@ import retrofit2.Response;
 public abstract class DiscoverMoreMovieTask extends AsyncTask<Integer, Void, DiscoverMovie> {
     private static final String TAG = "DiscoverMoreMovieTask";
 
-    private final int mGenreId;
+    private final String mGenreId;
 
-    public DiscoverMoreMovieTask(int genreId) {
+    public DiscoverMoreMovieTask(String genreId) {
         mGenreId = genreId;
     }
 
@@ -29,7 +29,7 @@ public abstract class DiscoverMoreMovieTask extends AsyncTask<Integer, Void, Dis
                 TMDBConstants.SortBy.popularity.desc()
                 , true
                 , params[0]
-                , String.valueOf(mGenreId)
+                , mGenreId
         );
         try {
             Response<DiscoverMovie> response = call.execute();

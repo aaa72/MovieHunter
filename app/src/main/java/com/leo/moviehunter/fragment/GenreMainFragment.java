@@ -18,14 +18,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
-import com.leo.moviehunter.task.GetGenreCoverUrlTask;
+import com.leo.moviehunter.data.Genre;
 import com.leo.moviehunter.task.GetGenresTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
-import com.leo.moviehunter.tmdb.response.Genre;
-import com.leo.moviehunter.tmdb.response.GetGenres;
 import com.leo.moviehunter.util.Log;
-
-import java.util.HashMap;
 
 public class GenreMainFragment extends Fragment {
     private static final String TAG = "GenreMainFragment";
@@ -34,7 +30,6 @@ public class GenreMainFragment extends Fragment {
     private GenresAdapter mGenresAdapter;
     private GridLayoutManager mLayoutManager;
     private Genre[] mGenres;
-    private final HashMap<Integer, String> mCoverUrlMap = new HashMap();
     private String mImageBaseUrl;
 
     public static GenreMainFragment newInstance() {
@@ -56,13 +51,11 @@ public class GenreMainFragment extends Fragment {
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 
-        new GetGenresTask() {
+        new GetGenresTask(getActivity()) {
             @Override
-            public void getGenres(GetGenres getGenres) {
-                mGenres = getGenres.genres;
+            protected void getGenres(Genre[] genres) {
+                mGenres = genres;
                 mGenresAdapter.notifyDataSetChanged();
-
-                getGenreCover();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
@@ -83,22 +76,6 @@ public class GenreMainFragment extends Fragment {
         mRecyclerView.setAdapter(mGenresAdapter);
 
         return root;
-    }
-
-    private void getGenreCover() {
-        if (mGenres == null) {
-            return;
-        }
-
-        for (final Genre genre : mGenres) {
-            new GetGenreCoverUrlTask(getActivity(), genre.id) {
-                @Override
-                public void onGetUrl(int genreId, String url) {
-                    mCoverUrlMap.put(genreId, url);
-                    mGenresAdapter.notifyDataSetChanged();
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
     }
 
     @Override
@@ -140,11 +117,11 @@ public class GenreMainFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             if (mGenres != null) {
-                holder.mTextView.setText(mGenres[position].name);
-                holder.mGenreOnClickListener.setGenreId(mGenres[position].id);
-                if (!TextUtils.isEmpty(mImageBaseUrl) && mCoverUrlMap.containsKey(mGenres[position].id)) {
+                holder.mTextView.setText(mGenres[position].getName());
+                holder.mGenreOnClickListener.setGenreId(mGenres[position].getId());
+                if (!TextUtils.isEmpty(mImageBaseUrl)) {
                     Glide.with(getActivity())
-                            .load(mImageBaseUrl + mCoverUrlMap.get(mGenres[position].id))
+                            .load(mImageBaseUrl + mGenres[position].getCoverImageUrl())
                             .placeholder(android.R.drawable.ic_dialog_alert)
                             .centerCrop()
                             .crossFade()
@@ -159,9 +136,9 @@ public class GenreMainFragment extends Fragment {
         }
 
         private class GenreOnClickListener implements OnClickListener {
-            private int mGenreId;
+            private String mGenreId;
 
-            public  void setGenreId(int id) {
+            public  void setGenreId(String id) {
                 mGenreId = id;
             }
 

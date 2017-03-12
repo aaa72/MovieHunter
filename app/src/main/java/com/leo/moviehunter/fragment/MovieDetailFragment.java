@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.task.GetMovieDetailTask;
-import com.leo.moviehunter.tmdb.response.MovieDetail;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
@@ -30,7 +30,7 @@ public class MovieDetailFragment extends Fragment {
     private TextView mText4;
     private TextView mTextContent;
 
-    private MovieDetail mMovieDetail;
+    private Movie mMovie;
     private String mMovieId;
     private String mBaseImageUrl;
     private boolean mViewReady;
@@ -63,10 +63,10 @@ public class MovieDetailFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        new GetMovieDetailTask(mMovieId) {
+        new GetMovieDetailTask(getActivity(), mMovieId) {
             @Override
-            protected void onGetMovieDetail(MovieDetail movieDetail) {
-                mMovieDetail = movieDetail;
+            protected void onGetMovie(Movie movie) {
+                mMovie = movie;
                 setByMovie();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
@@ -102,21 +102,21 @@ public class MovieDetailFragment extends Fragment {
             return;
         }
 
-        final MovieDetail movie = mMovieDetail;
+        final Movie movie = mMovie;
         if (movie == null) {
             return;
         }
 
         Glide.with(this)
-                .load(mBaseImageUrl + movie.poster_path)
+                .load(mBaseImageUrl + movie.getCoverImageUrl())
                 .placeholder(android.R.drawable.ic_dialog_alert)
                 .centerCrop()
                 .crossFade()
                 .into(mImage);
-        mText1.setText(movie.title);
-        mText2.setText(movie.original_title);
-        mText3.setText(movie.release_date);
-        mText4.setText(getString(R.string.score) + ": " + movie.vote_average);
-        mTextContent.setText(movie.overview);
+        mText1.setText(movie.getTitle());
+        mText2.setText(movie.getOriginalTitle());
+        mText3.setText(movie.getReleaseDate());
+        mText4.setText(getString(R.string.score) + ": " + movie.getScore());
+        mTextContent.setText(movie.getOverview());
     }
 }

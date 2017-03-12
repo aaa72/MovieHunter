@@ -63,10 +63,10 @@ public class WatchListFragment extends Fragment {
                 mAdapter.setWatchList(watchList);
 
                 for (WatchItem watchItem : watchList) {
-                    new GetMovieDetailTask(watchItem.getMovieId()) {
+                    new GetMovieDetailTask(getActivity(), watchItem.getMovieId()) {
                         @Override
-                        protected void onGetMovieDetail(MovieDetail movieDetail) {
-                            mMovieList.add(TMDBUtil.movieDetail2Movie(movieDetail));
+                        protected void onGetMovie(Movie movie) {
+                            mMovieList.add(movie);
                             ++mCount;
                             if (mCount == watchList.size()) {
                                 pushToAdapter();

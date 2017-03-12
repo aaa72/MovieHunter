@@ -17,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // vincentbrison - object cache
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -58,4 +64,8 @@ dependencies {
     // glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:19.1.0'
+
+    // vincentbrison - object cache
+    compile 'com.vincentbrison.openlibraries.android:dualcache:3.1.1'
+    compile 'com.vincentbrison.openlibraries.android:dualcache-jsonserializer:3.1.1'
 }

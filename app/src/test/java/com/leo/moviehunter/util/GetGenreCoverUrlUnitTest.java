@@ -3,10 +3,6 @@ package com.leo.moviehunter.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.leo.moviehunter.task.GetGenreCoverUrlTask;
-
-import junit.framework.Assert;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,14 +49,6 @@ public class GetGenreCoverUrlUnitTest {
 
         context = Mockito.mock(Context.class);
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
-
-        new GetGenreCoverUrlTask(context, 53) {
-            @Override
-            public void onGetUrl(int genreId, String url) {
-                System.out.println("genreId = " + genreId + ", url = " + url);
-                Assert.assertNotNull(url);
-            }
-        }.execute();
     }
 }
 

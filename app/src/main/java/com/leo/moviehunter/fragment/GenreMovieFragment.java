@@ -29,15 +29,15 @@ public class GenreMovieFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
-    private int mGenreId = -1;
+    private String mGenreId;
     private int mNextMoviePage = 1;
     private int mTotalPages = 0;
     private boolean mIsLoadingMovie = false;
 
-    public static GenreMovieFragment newInstance(int genreId) {
+    public static GenreMovieFragment newInstance(String genreId) {
         GenreMovieFragment fragment = new GenreMovieFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(MHConstants.BUNDLE_KEY_GENRE_ID, genreId);
+        bundle.putString(MHConstants.BUNDLE_KEY_GENRE_ID, genreId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -96,8 +96,8 @@ public class GenreMovieFragment extends Fragment {
         return root;
     }
 
-    private int getGenreId() {
-        return getArguments() != null ? getArguments().getInt(MHConstants.BUNDLE_KEY_GENRE_ID) : -1;
+    private String getGenreId() {
+        return getArguments() != null ? getArguments().getString(MHConstants.BUNDLE_KEY_GENRE_ID) : null;
     }
 
     @UiThread
@@ -113,7 +113,7 @@ public class GenreMovieFragment extends Fragment {
 
         new DiscoverMoreMovieTask(mGenreId) {
             @Override
-            public void onGetDiscoverMovie(Movie[] movies, int page, int totalPages, int totalMovies) {
+            public void onGetDiscoverMovie(Movie[] movies, int totalMovies, int page, int totalPages) {
                 if (mTotalPages != totalPages) {
                     Log.d(TAG, "totalPages: " + totalPages + ", totalMovies: " + totalMovies);
                     mTotalPages = totalPages;
