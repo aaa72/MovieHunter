@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "574397650066",
+    "project_id": "firebase-moviehunter"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574397650066:android:468399cb6df402d7",
+        "android_client_info": {
+          "package_name": "com.leo.moviehunter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_7PHpOUgldyjja0HfyiJuqk6Rr1S3wH8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-93549097-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

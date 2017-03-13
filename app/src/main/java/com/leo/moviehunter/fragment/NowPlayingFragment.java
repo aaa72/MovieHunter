@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
@@ -19,6 +21,7 @@ import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetNowPlayingTask;
 import com.leo.moviehunter.task.GetWatchListTask;
 import com.leo.moviehunter.util.Log;
+import com.leo.moviehunter.widget.Application;
 import com.leo.moviehunter.widget.MovieAdapter;
 
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.List;
 public class NowPlayingFragment extends Fragment {
     private static final String TAG = "NowPlayingFragment";
 
+    private Tracker mTracker;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
@@ -42,10 +46,21 @@ public class NowPlayingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Application application = (Application) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         mAdapter = new MovieAdapter(this);
         mAdapter.setGetMoreMovieClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Click")
+                        .setAction("Get More Movie")
+                        .build());
+
                 getMoreMovie();
             }
         });

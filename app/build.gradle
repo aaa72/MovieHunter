@@ -68,4 +68,10 @@ dependencies {
     // vincentbrison - object cache
     compile 'com.vincentbrison.openlibraries.android:dualcache:3.1.1'
     compile 'com.vincentbrison.openlibraries.android:dualcache-jsonserializer:3.1.1'
+
+    // google analytics
+    compile 'com.google.android.gms:play-services-analytics:10.0.1'
 }
+
+// google analytics
+apply plugin: 'com.google.gms.google-services'
