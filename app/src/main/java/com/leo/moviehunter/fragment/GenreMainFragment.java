@@ -21,6 +21,7 @@ import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Genre;
 import com.leo.moviehunter.task.GetGenresTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 
 public class GenreMainFragment extends Fragment {
@@ -86,6 +87,12 @@ public class GenreMainFragment extends Fragment {
         } else {
             mLayoutManager.setSpanCount(2);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        CommonUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.genre));
     }
 
     private class GenresAdapter extends RecyclerView.Adapter<GenresAdapter.ViewHolder> {

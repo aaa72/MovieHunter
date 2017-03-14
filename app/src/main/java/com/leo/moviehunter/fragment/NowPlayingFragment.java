@@ -20,6 +20,7 @@ import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetNowPlayingTask;
 import com.leo.moviehunter.task.GetWatchListTask;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.widget.Application;
 import com.leo.moviehunter.widget.MovieAdapter;
@@ -101,6 +102,12 @@ public class NowPlayingFragment extends Fragment {
         }
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        CommonUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.now_playing));
     }
 
     @UiThread

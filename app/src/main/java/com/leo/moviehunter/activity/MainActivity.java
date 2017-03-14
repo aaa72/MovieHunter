@@ -1,5 +1,6 @@
 package com.leo.moviehunter.activity;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private Toolbar mToolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +50,18 @@ public class MainActivity extends AppCompatActivity {
                 ));
         mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
 
-        Toolbar toolBar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolBar);
-        toolBar.setNavigationIcon(android.R.drawable.btn_dialog);
-//        toolBar.setLogo(R.mipmap.ic_launcher);
-        toolBar.setOnMenuItemClickListener(mOnMenuItemClick);
-        toolBar.setOnClickListener(new OnClickListener() {
+        mToolBar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mToolBar);
+        mToolBar.setNavigationIcon(android.R.drawable.btn_dialog);
+//        mToolBar.setLogo(R.mipmap.ic_launcher);
+        mToolBar.setOnMenuItemClickListener(mOnMenuItemClick);
+        mToolBar.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.openDrawer(DRAWER_GRAVITY);
             }
         });
-        toolBar.setNavigationOnClickListener(new OnClickListener() {
+        mToolBar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -76,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @SuppressWarnings("unused") // method call by reflection
+    public void setSubTitle(String title) {
+        if (mToolBar != null) {
+            mToolBar.setSubtitle(title);
+        }
     }
 
     private final Toolbar.OnMenuItemClickListener mOnMenuItemClick = new Toolbar.OnMenuItemClickListener() {

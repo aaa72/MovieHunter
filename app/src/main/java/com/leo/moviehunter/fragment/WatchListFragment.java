@@ -17,6 +17,7 @@ import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetMovieDetailTask;
 import com.leo.moviehunter.task.GetWatchListTask;
 import com.leo.moviehunter.tmdb.response.MovieDetail;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.TMDBUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
@@ -99,5 +100,11 @@ public class WatchListFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        CommonUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.watch_list));
     }
 }

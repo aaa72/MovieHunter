@@ -12,11 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leo.moviehunter.R;
+import com.leo.moviehunter.data.Genre;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.DiscoverMoreMovieTask;
+import com.leo.moviehunter.task.GetGenresTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetWatchListTask;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 import com.leo.moviehunter.widget.MovieAdapter;
@@ -30,6 +33,7 @@ public class GenreMovieFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
     private String mGenreId;
+    private String mGenreName;
     private int mNextMoviePage = 1;
     private int mTotalPages = 0;
     private boolean mIsLoadingMovie = false;
@@ -54,6 +58,22 @@ public class GenreMovieFragment extends Fragment {
                 getMoreMovie();
             }
         });
+
+        new GetGenresTask(getActivity()) {
+            @Override
+            protected void getGenres(Genre[] genres) {
+                if (genres == null) {
+                    return;
+                }
+                for (Genre genre : genres) {
+                    if (mGenreId.equals(genre.getId())) {
+                        mGenreName = genre.getName();
+                        setSubTitle();
+                        break;
+                    }
+                }
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         // load image base url
         new GetImageBaseUrlTask() {
@@ -94,6 +114,18 @@ public class GenreMovieFragment extends Fragment {
         }
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setSubTitle();
+    }
+
+    private void setSubTitle() {
+        if (mGenreName != null) {
+            CommonUtil.setActivityToolbarSubTitle(getActivity(), mGenreName);
+        }
     }
 
     private String getGenreId() {

@@ -17,6 +17,7 @@ import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.task.GetMovieDetailTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 
@@ -50,7 +51,6 @@ public class MovieDetailFragment extends Fragment {
         mMovieId = getMovieId();
         Log.d(TAG, "mMovieId: " + mMovieId);
         if (TextUtils.isEmpty(mMovieId)) {
-
             return;
         }
 
@@ -90,6 +90,12 @@ public class MovieDetailFragment extends Fragment {
         setByMovie();
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        CommonUtil.setActivityToolbarSubTitle(getActivity(), "");
     }
 
     private String getMovieId() {

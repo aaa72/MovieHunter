@@ -1,11 +1,17 @@
 package com.leo.moviehunter.util;
 
+import android.app.Activity;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class CommonUtil {
+    private static final String TAG = "CommonUtil";
+
     public static void closeCursor(Closeable closeable) {
         if (closeable != null)  {
             try {
@@ -53,5 +59,14 @@ public class CommonUtil {
         byte[] byteArray = byteArrayOutputStream.toByteArray();
 
         return byteArray == null ? 0 : byteArray.length;
+    }
+
+    public static void setActivityToolbarSubTitle(Activity activity, String title) {
+        try {
+            Method method = activity.getClass().getDeclaredMethod("setSubTitle", String.class);
+            method.invoke(activity, title);
+        } catch (Exception e) {
+            Log.w(TAG, "do not have setSubTitle method");
+        }
     }
 }
