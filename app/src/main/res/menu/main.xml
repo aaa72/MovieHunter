@@ -10,6 +10,14 @@
           android:icon="@drawable/ab_share"
           app:showAsAction="ifRoom" />-->
 
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/search_movie"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        />
+
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:orderInCategory="100"

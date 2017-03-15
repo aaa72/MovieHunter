@@ -3,8 +3,11 @@
     <string name="score">分數</string>
     <string name="action_settings">設定</string>
     <string name="action_about">關於</string>
+    <string name="action_search">搜尋</string>
     <string name="genre">類型</string>
     <string name="now_playing">現正放映</string>
     <string name="watch_list">待看清單</string>
     <string name="watch_history">觀看紀錄</string>
+    <string name="search_movie">搜尋電影</string>
+    <string name="back_again">再按一次離開</string>
 </resources>

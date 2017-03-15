@@ -83,7 +83,7 @@ public class TMDBServiceManager {
                 @Query("query") String query,
                 @Query("page") int page,
                 @Query("include_adult") boolean includeAdult,
-                @Query("year") int year
+                @Query("year") Integer year
         );
 
         @GET("configuration")
