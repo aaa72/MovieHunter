@@ -15,8 +15,6 @@ import com.leo.moviehunter.provider.UserDataStore.TableMovieGenre;
 import com.leo.moviehunter.provider.UserDataStore.TableWatchList;
 import com.leo.moviehunter.util.Log;
 
-import java.util.Arrays;
-
 import static com.leo.moviehunter.provider.UserDataStore.AUTHORITY;
 
 public class UserDataProvider extends ContentProvider {
@@ -257,7 +255,7 @@ public class UserDataProvider extends ContentProvider {
                 try {
                     Uri uris[] = new Uri[values.length];
                     for (int i = 0; i < values.length; i++) {
-                        long id = db.insert(TableWatchList.TableName, null, values[i]);
+                        long id = db.insertWithOnConflict(TableWatchList.TableName, null, values[i], SQLiteDatabase.CONFLICT_REPLACE);
                         if (id > 0) {
                             count++;
                             uris[i] = ContentUris.withAppendedId(uri, id);
@@ -278,7 +276,7 @@ public class UserDataProvider extends ContentProvider {
                 try {
                     Uri uris[] = new Uri[values.length];
                     for (int i = 0; i < values.length; i++) {
-                        long id = db.insert(TableMovieGenre.TableName, null, values[i]);
+                        long id = db.insertWithOnConflict(TableMovieGenre.TableName, null, values[i], SQLiteDatabase.CONFLICT_IGNORE);
                         if (id > 0) {
                             count++;
                             uris[i] = ContentUris.withAppendedId(uri, id);
@@ -334,7 +332,15 @@ public class UserDataProvider extends ContentProvider {
                 + ", "
                 + TableWatchList.MovieId + " text unique not null"
                 + ", "
+                + TableWatchList.Status + " integer"
+                + ", "
                 + TableWatchList.AddedEpochTime + " integer"
+                + ", "
+                + TableWatchList.WatchedEpochTime + " integer"
+                + ", "
+                + TableWatchList.Comment + " text"
+                + ", "
+                + TableWatchList.Score + " real"
                 + ");";
 
         private final String SQL_CREATE_MOVIE_GENRE = "create table " + TableMovieGenre.TableName + "( "

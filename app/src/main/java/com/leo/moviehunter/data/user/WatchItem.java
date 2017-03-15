@@ -12,6 +12,16 @@ public class WatchItem {
         mMovieId = movieId;
     }
 
+    private int mStatus;
+
+    public int getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(int status) {
+        mStatus = status;
+    }
+
     private long mAddedEpochTime;
 
     public long getAddedEpochTime() {
@@ -22,6 +32,16 @@ public class WatchItem {
         mAddedEpochTime = addedEpochTime;
     }
 
+    private long mWatchedEpochTime;
+
+    public long getWatchedEpochTime() {
+        return mWatchedEpochTime;
+    }
+
+    public void setWatchedEpochTime(long watchedEpochTime) {
+        mWatchedEpochTime = watchedEpochTime;
+    }
+
     private String[] mGenreIds;
 
     public String[] getGenreIds() {
@@ -30,5 +50,25 @@ public class WatchItem {
 
     public void setGenreIds(String[] genreId) {
         mGenreIds = genreId;
+    }
+
+    private String mComment;
+
+    public String getComment() {
+        return mComment;
+    }
+
+    public void setComment(String comment) {
+        mComment = comment;
+    }
+
+    private float mScore;
+
+    public float getScore() {
+        return mScore;
+    }
+
+    public void setScore(float score) {
+        mScore = score;
     }
 }

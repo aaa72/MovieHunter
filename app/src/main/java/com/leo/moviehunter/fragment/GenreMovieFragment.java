@@ -18,7 +18,7 @@ import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.DiscoverMoreMovieTask;
 import com.leo.moviehunter.task.GetGenresTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
-import com.leo.moviehunter.task.GetWatchListTask;
+import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
@@ -84,10 +84,10 @@ public class GenreMovieFragment extends Fragment {
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         // get watch list
-        new GetWatchListTask(getActivity()) {
+        new GetToWatchListTask(getActivity()) {
             @Override
-            public void onGetWatchList(List<WatchItem> watchList) {
-                mAdapter.setWatchList(watchList);
+            public void onGetToWatchList(List<WatchItem> toWatchList) {
+                mAdapter.setWatchList(toWatchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 

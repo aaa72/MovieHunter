@@ -204,24 +204,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         @Override
         public void onClick(View v) {
             if (mStatusView.getTag() == mStarOn) {
+                List<WatchItem> list = new ArrayList<>();
+                list.add(mWatchList.get(mMovie.getId()));
                 new DeleteFromWatchListTask(mStatusView.getContext()) {
                     @Override
-                    protected void onDone(String ...movieIds) {
-                        if (movieIds == null) {
+                    protected void onDone(List<WatchItem> deleteList) {
+                        if (deleteList == null) {
                             return;
                         }
-                        for (String movieId : movieIds) {
-                            mWatchList.remove(movieId);
+                        for (WatchItem watchItem : deleteList) {
+                            mWatchList.remove(watchItem.getMovieId());
                         }
                     }
-                }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, mMovie.getId());
+                }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, list);
                 mStatusView.setImageDrawable(mStarOff);
                 mStatusView.setTag(mStarOff);
             } else if (mStatusView.getTag() == mStarOff) {
                 List<WatchItem> list = new ArrayList<>();
                 WatchItem item = new WatchItem();
                 item.setMovieId(mMovie.getId());
-                item.setAddedEpochTime(System.currentTimeMillis());
                 item.setGenreIds(mMovie.getGenreIds());
                 list.add(item);
                 new AddToWatchListTask(mStatusView.getContext()) {

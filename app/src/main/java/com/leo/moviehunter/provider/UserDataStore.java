@@ -11,14 +11,17 @@ public class UserDataStore {
     public static Uri URI_WATCH_LIST = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + TableWatchList.TableName);
     public static Uri URI_MOVIE_GENRE = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + TableMovieGenre.TableName);
 
-
     // TABLE
     public interface TableWatchList {
         String TableName = "watch_list";
 
         // columns
         String MovieId = "movie_id";
+        String Status = "status";
         String AddedEpochTime = "added_epoch_time";
+        String WatchedEpochTime = "watched_epoch_time";
+        String Comment = "comment";
+        String Score = "score";
     }
 
     public interface TableMovieGenre {
@@ -27,5 +30,10 @@ public class UserDataStore {
         // columns
         String MovieId = "movie_id";
         String GenreId = "genre_id";
+    }
+
+    public interface Status {
+        int TO_WATCH = 0x1;
+        int WATCHED = 0x2;
     }
 }

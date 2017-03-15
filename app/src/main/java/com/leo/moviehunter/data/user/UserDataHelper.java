@@ -1,5 +1,7 @@
 package com.leo.moviehunter.data.user;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,18 +18,38 @@ import java.util.List;
 public class UserDataHelper {
     private static final String TAG = "UserDataHelper";
 
-    public static List<WatchItem> getWatchList(Context context) {
+    public static List<WatchItem> getToWatchList(Context context) {
+        final String where = TableWatchList.Status + " & ? != 0";
+        final String[] whereArgs = new String[] {String.valueOf(UserDataStore.Status.TO_WATCH)};
+        return _getWatchList(context, where, whereArgs, null);
+    }
+
+    public static List<WatchItem> getWatchedList(Context context) {
+        final String where = TableWatchList.Status + " & ? != 0";
+        final String[] whereArgs = new String[] {String.valueOf(UserDataStore.Status.WATCHED)};
+        return _getWatchList(context, where, whereArgs, null);
+    }
+
+    private static List<WatchItem> _getWatchList(Context context, String where, String[] whereArgs, String sortBy) {
         Cursor cursor = null;
         try {
-            cursor = context.getContentResolver().query(UserDataStore.URI_WATCH_LIST, null, null, null, null);
+            cursor = context.getContentResolver().query(UserDataStore.URI_WATCH_LIST, null, where, whereArgs, sortBy);
             if (cursor != null) {
                 ArrayList<WatchItem> list = new ArrayList<>();
                 final int idxMovieId = cursor.getColumnIndexOrThrow(TableWatchList.MovieId);
+                final int idxStatus = cursor.getColumnIndexOrThrow(TableWatchList.Status);
                 final int idxAddedEpochTime = cursor.getColumnIndexOrThrow(TableWatchList.AddedEpochTime);
+                final int idxWatchedEpochTime = cursor.getColumnIndexOrThrow(TableWatchList.WatchedEpochTime);
+                final int idxComment = cursor.getColumnIndexOrThrow(TableWatchList.Comment);
+                final int idxScore = cursor.getColumnIndexOrThrow(TableWatchList.Score);
                 for (cursor.moveToFirst() ; !cursor.isAfterLast() ; cursor.moveToNext()) {
                     WatchItem item = new WatchItem();
                     item.setMovieId(cursor.getString(idxMovieId));
+                    item.setStatus(cursor.getInt(idxStatus));
                     item.setAddedEpochTime(cursor.getLong(idxAddedEpochTime));
+                    item.setWatchedEpochTime(cursor.getLong(idxWatchedEpochTime));
+                    item.setComment(cursor.getString(idxComment));
+                    item.setScore(cursor.getFloat(idxScore));
                     item.setGenreIds(getGenreIds(context, cursor.getString(idxMovieId)));
                     list.add(item);
                 }
@@ -63,6 +85,22 @@ public class UserDataHelper {
     }
 
     public static int addToWatchList(Context context, List<WatchItem> list) {
+        for (WatchItem watchItem : list) {
+            watchItem.setStatus(watchItem.getStatus() | UserDataStore.Status.TO_WATCH);
+            watchItem.setAddedEpochTime(System.currentTimeMillis());
+        }
+        return _addToWatchList(context, list);
+    }
+
+    public static int addToWatchedList(Context context, List<WatchItem> list) {
+        for (WatchItem watchItem : list) {
+            watchItem.setStatus(watchItem.getStatus() | UserDataStore.Status.WATCHED);
+            watchItem.setWatchedEpochTime(System.currentTimeMillis());
+        }
+        return _addToWatchList(context, list);
+    }
+
+    private static int _addToWatchList(Context context, List<WatchItem> list) {
         if (list == null) {
             return -1;
         }
@@ -76,7 +114,11 @@ public class UserDataHelper {
             WatchItem item = list.get(i);
             values[i] = new ContentValues();
             values[i].put(TableWatchList.MovieId, item.getMovieId());
-            values[i].put(TableWatchList.AddedEpochTime, item.getMovieId());
+            values[i].put(TableWatchList.Status, item.getStatus());
+            values[i].put(TableWatchList.AddedEpochTime, item.getAddedEpochTime());
+            values[i].put(TableWatchList.WatchedEpochTime, item.getWatchedEpochTime());
+            values[i].put(TableWatchList.Comment, item.getComment());
+            values[i].put(TableWatchList.Score, item.getScore());
             addToMovieGenre(context, item.getMovieId(), item.getGenreIds());
         }
         try {
@@ -106,20 +148,61 @@ public class UserDataHelper {
         }
     }
 
-    public static int deleteFromWatchList(Context context, String ...movieIds) {
-        if (movieIds == null || movieIds.length <= 0) {
+    public static int deleteFromToWatchList(Context context, List<WatchItem> list) {
+        for (WatchItem watchItem : list) {
+            watchItem.setStatus(watchItem.getStatus() ^ UserDataStore.Status.TO_WATCH);
+            watchItem.setAddedEpochTime(0);
+        }
+        return _deleteFromWatchList(context, list);
+    }
+
+    public static int deleteFromWatchedList(Context context, List<WatchItem> list) {
+        for (WatchItem watchItem : list) {
+            watchItem.setStatus(watchItem.getStatus() ^ UserDataStore.Status.WATCHED);
+            watchItem.setWatchedEpochTime(0);
+        }
+        return _deleteFromWatchList(context, list);
+    }
+
+    private static int _deleteFromWatchList(Context context, List<WatchItem> list) {
+        if (list == null || list.size() <= 0) {
             return 0;
         }
 
-        int count = 0;
-        for (String movieId : movieIds) {
-            int ret = context.getContentResolver().delete(UserDataStore.URI_WATCH_LIST,
-                    TableWatchList.MovieId + "=?", new String[] {movieId});
-            if (ret > 0) {
-                count++;
-                deleteFromMovieGenre(context, movieId);
+        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+        ArrayList<ContentProviderOperation> deleteGenreOps = new ArrayList<>();
+        for (WatchItem watchItem : list) {
+            final String where = TableWatchList.MovieId + "=?";
+            final String[] whereArgs = new String[] {watchItem.getMovieId()};
+            if (watchItem.getStatus() > 0) {
+                ops.add(ContentProviderOperation.newUpdate(UserDataStore.URI_WATCH_LIST)
+                        .withValue(TableWatchList.Status, watchItem.getStatus())
+                        .withSelection(where, whereArgs)
+                        .build());
+            } else {
+                ops.add(ContentProviderOperation.newDelete(UserDataStore.URI_WATCH_LIST)
+                        .withSelection(where, whereArgs)
+                        .build());
+                deleteGenreOps.add(ContentProviderOperation.newDelete(UserDataStore.URI_MOVIE_GENRE)
+                        .withSelection(TableMovieGenre.MovieId + "=?", new String[] {watchItem.getMovieId()})
+                        .build());
             }
         }
+
+        int count = 0;
+        try {
+            ContentProviderResult[] results = context.getContentResolver().applyBatch(UserDataStore.AUTHORITY, ops);
+            for (int i = 0; i < results.length; i++) {
+                ContentProviderResult result = results[i];
+                if (result.count != null && result.count.intValue() > 0) {
+                    count++;
+                }
+            }
+            context.getContentResolver().applyBatch(UserDataStore.AUTHORITY, deleteGenreOps);
+        } catch (Exception e) {
+            Log.w(TAG, "" + e, e);
+        }
+
         return count;
     }
 

@@ -19,7 +19,7 @@ import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetNowPlayingTask;
-import com.leo.moviehunter.task.GetWatchListTask;
+import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.widget.Application;
@@ -75,10 +75,10 @@ public class NowPlayingFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        new GetWatchListTask(getActivity()) {
+        new GetToWatchListTask(getActivity()) {
             @Override
-            protected void onGetWatchList(List<WatchItem> watchList) {
-                mAdapter.setWatchList(watchList);
+            protected void onGetToWatchList(List<WatchItem> toWatchList) {
+                mAdapter.setWatchList(toWatchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }

@@ -16,7 +16,7 @@ import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
-import com.leo.moviehunter.task.GetWatchListTask;
+import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.task.SearchMovieTask;
 import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
@@ -67,10 +67,10 @@ public class SearchMovieFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        new GetWatchListTask(getActivity()) {
+        new GetToWatchListTask(getActivity()) {
             @Override
-            protected void onGetWatchList(List<WatchItem> watchList) {
-                mAdapter.setWatchList(watchList);
+            protected void onGetToWatchList(List<WatchItem> toWatchList) {
+                mAdapter.setWatchList(toWatchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }

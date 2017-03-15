@@ -4,8 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.leo.moviehunter.data.user.UserDataHelper;
+import com.leo.moviehunter.data.user.WatchItem;
 
-public abstract class DeleteFromWatchListTask extends AsyncTask<String, Void, String[]> {
+import java.util.List;
+
+public abstract class DeleteFromWatchListTask extends AsyncTask<List<WatchItem>, Void, List<WatchItem>> {
     private Context mContext;
 
     public DeleteFromWatchListTask(Context context) {
@@ -13,15 +16,15 @@ public abstract class DeleteFromWatchListTask extends AsyncTask<String, Void, St
     }
 
     @Override
-    protected String[] doInBackground(String... params) {
-        int ret = UserDataHelper.deleteFromWatchList(mContext, params);
-        return ret > 0 ? params : null;
+    protected List<WatchItem> doInBackground(List<WatchItem>... params) {
+        int ret = UserDataHelper.deleteFromToWatchList(mContext, params[0]);
+        return ret > 0 ? params[0] : null;
     }
 
     @Override
-    protected void onPostExecute(String ...deletedIds) {
-        onDone(deletedIds);
+    protected void onPostExecute(List<WatchItem> deletedList) {
+        onDone(deletedList);
     }
 
-    abstract protected void onDone(String ...deletedIds);
+    abstract protected void onDone(List<WatchItem> deletedList);
 }

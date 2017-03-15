@@ -15,11 +15,9 @@ import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetMovieDetailTask;
-import com.leo.moviehunter.task.GetWatchListTask;
-import com.leo.moviehunter.tmdb.response.MovieDetail;
+import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
-import com.leo.moviehunter.util.TMDBUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
 
 import java.util.ArrayList;
@@ -51,25 +49,25 @@ public class WatchListFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        new GetWatchListTask(getActivity()) {
+        new GetToWatchListTask(getActivity()) {
             private final int FREQUENCY = 3;
             private ArrayList<Movie> mMovieList = new ArrayList<>();
             private int mCount = 0;
             @Override
-            protected void onGetWatchList(final List<WatchItem> watchList) {
-                if (watchList == null) {
+            protected void onGetToWatchList(final List<WatchItem> toWatchList) {
+                if (toWatchList == null) {
                     return;
                 }
 
-                mAdapter.setWatchList(watchList);
+                mAdapter.setWatchList(toWatchList);
 
-                for (WatchItem watchItem : watchList) {
+                for (WatchItem watchItem : toWatchList) {
                     new GetMovieDetailTask(getActivity(), watchItem.getMovieId()) {
                         @Override
                         protected void onGetMovie(Movie movie) {
                             mMovieList.add(movie);
                             ++mCount;
-                            if (mCount == watchList.size()) {
+                            if (mCount == toWatchList.size()) {
                                 pushToAdapter();
                             } else if (mCount % FREQUENCY == 0) {
                                 pushToAdapter();

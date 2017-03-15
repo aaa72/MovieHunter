@@ -2,19 +2,15 @@ package com.leo.moviehunter.provider;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ProviderTestCase2;
-import android.test.mock.MockContentResolver;
 
 import com.leo.moviehunter.data.user.UserDataHelper;
 import com.leo.moviehunter.data.user.WatchItem;
-import com.leo.moviehunter.provider.UserDataStore.TableMovieGenre;
 import com.leo.moviehunter.provider.UserDataStore.TableWatchList;
-import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 
 import org.junit.Before;
@@ -22,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -46,19 +41,16 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         item = new WatchItem();
         ArrayList<WatchItem> list = new ArrayList<>();
         item.setMovieId("1");
-        item.setAddedEpochTime(11111111);
         item.setGenreIds(new String[] {"1","2","3"});
         list.add(item);
 
         item = new WatchItem();
         item.setMovieId("2");
-        item.setAddedEpochTime(22222222);
         item.setGenreIds(new String[] {"1","2"});
         list.add(item);
 
         item = new WatchItem();
         item.setMovieId("3");
-        item.setAddedEpochTime(33333333);
         item.setGenreIds(new String[] {"2","3"});
         list.add(item);
 
@@ -66,11 +58,11 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         assertTrue(ret > 0);
 
         // Get
-        List<WatchItem> list2 = UserDataHelper.getWatchList(getMockContext());
+        List<WatchItem> list2 = UserDataHelper.getToWatchList(getMockContext());
         assertTrue(list2 != null && list2.size() == ret);
 
         // delete
-        int delRet = UserDataHelper.deleteFromWatchList(getMockContext(), list.get(0).getMovieId());
+        int delRet = UserDataHelper.deleteFromToWatchList(getMockContext(), list.subList(0, 1));
         assertTrue(delRet == 1);
     }
 
