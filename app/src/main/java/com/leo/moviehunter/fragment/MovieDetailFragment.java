@@ -15,11 +15,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
-import com.leo.moviehunter.task.GetMovieDetailTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
-import com.leo.moviehunter.util.CommonUtil;
+import com.leo.moviehunter.task.GetMovieDetailTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
+import com.leo.moviehunter.util.MHUtil;
 
 public class MovieDetailFragment extends Fragment {
     private static final String TAG = "MovieDetailFragment";
@@ -95,7 +95,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        CommonUtil.setActivityToolbarSubTitle(getActivity(), "");
+        MHUtil.setActivityToolbarSubTitle(getActivity(), "");
     }
 
     private String getMovieId() {

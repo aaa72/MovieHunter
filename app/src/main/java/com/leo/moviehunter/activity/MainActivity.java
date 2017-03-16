@@ -25,6 +25,7 @@ import com.leo.moviehunter.fragment.GenreMainFragment;
 import com.leo.moviehunter.fragment.NowPlayingFragment;
 import com.leo.moviehunter.fragment.SearchMovieFragment;
 import com.leo.moviehunter.fragment.WatchListFragment;
+import com.leo.moviehunter.fragment.WatchedListFragment;
 import com.leo.moviehunter.util.Log;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
                 new String[] {
                         getString(R.string.genre),              // 0
                         getString(R.string.now_playing),        // 1
-                        getString(R.string.watch_list),      // 2
+                        getString(R.string.search_movie),       // 2
+                        getString(R.string.watch_list),         // 3
+                        getString(R.string.watch_history),      // 4
                 }
                 ));
         mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
@@ -166,9 +169,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
                 case 2: {
+                    mSearchView.setIconified(false);
+                }
+                break;
+
+                case 3: {
                     clearAllFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.frame, WatchListFragment.newInstance());
+                    transaction.commit();
+                }
+                break;
+
+                case 4: {
+                    clearAllFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frame, WatchedListFragment.newInstance());
                     transaction.commit();
                 }
                 break;

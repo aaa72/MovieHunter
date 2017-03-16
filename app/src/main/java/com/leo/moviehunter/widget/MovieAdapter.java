@@ -19,13 +19,18 @@ import com.bumptech.glide.Glide;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
+import com.leo.moviehunter.fragment.EditWatchedMovieFragment;
+import com.leo.moviehunter.fragment.EditWatchedMovieFragment.OnEditDoneListener;
 import com.leo.moviehunter.fragment.MovieDetailFragment;
 import com.leo.moviehunter.task.AddToWatchListTask;
+import com.leo.moviehunter.task.AddToWatchedListTask;
 import com.leo.moviehunter.task.DeleteFromWatchListTask;
+import com.leo.moviehunter.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +45,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private final Map<String, WatchItem> mWatchList = new HashMap<>();
     private final Drawable mStarOn;
     private final Drawable mStarOff;
+    private boolean mStatus2Enabled;
 
     public MovieAdapter(Fragment fragment) {
         mFragment = fragment;
@@ -78,17 +84,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public void setStatus2Enabled(boolean enabled) {
+        mStatus2Enabled = enabled;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ViewGroup mContainer;
         private ViewGroup mMovieContainer;
         private ImageView mImage;
         private ImageView mStatusImage;
+        private ImageView mStatus2Image;
         private TextView mText1;
         private TextView mText2;
         private TextView mText3;
         private ViewGroup mGetMoreContainer;
         private MovieOnClickListener mMovieOnClickListener;
         private StatusOnClickListener mStatusOnClickListener;
+        private Status2OnClickListener mStatus2OnClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -98,6 +110,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             mStatusImage = (ImageView) itemView.findViewById(R.id.movie_status);
             mStatusOnClickListener = new StatusOnClickListener(mStatusImage);
             mStatusImage.setOnClickListener(mStatusOnClickListener);
+            mStatus2Image = (ImageView) itemView.findViewById(R.id.movie_status_2);
+            mStatus2Image.setVisibility(mStatus2Enabled ? View.VISIBLE : View.GONE);
+            mStatus2OnClickListener = new Status2OnClickListener(mStatus2Image);
+            mStatus2Image.setOnClickListener(mStatus2OnClickListener);
             mText1 = (TextView) itemView.findViewById(R.id.movie_text_1);
             mText2 = (TextView) itemView.findViewById(R.id.movie_text_2);
             mText3 = (TextView) itemView.findViewById(R.id.movie_text_3);
@@ -149,6 +165,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.mText2.setText(context.getString(R.string.score) + ": " + movie.getScore());
         holder.mText3.setText(movie.getReleaseDate());
         holder.mMovieOnClickListener.setMovie(movie);
+        holder.mStatus2OnClickListener.setMovie(movie);
     }
 
     @Override
@@ -239,6 +256,57 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 mStatusView.setImageDrawable(mStarOn);
                 mStatusView.setTag(mStarOn);
             }
+        }
+    }
+
+    private class Status2OnClickListener implements OnClickListener {
+
+        private final ImageView mStatus2View;
+        private Movie mMovie;
+
+        public Status2OnClickListener(ImageView statusView) {
+            mStatus2View = statusView;
+        }
+
+        public  void setMovie(Movie movie) {
+            mMovie = movie;
+        }
+
+        @Override
+        public void onClick(View v) {
+            EditWatchedMovieFragment fragment = EditWatchedMovieFragment.newInstance(mMovie.getId(), mMovie.getTitle());
+            fragment.setOnEditDoneListener(new OnEditDoneListener() {
+                @Override
+                public void onEditDone(String movieId, float score, String comment) {
+                    Log.d(TAG, "onEditDone() - movieId: " + movieId + ", score: " + score + ", comment: " + comment);
+
+                    WatchItem watchItem;
+                    if ((watchItem = mWatchList.get(movieId)) != null) {
+                        ArrayList<WatchItem> list = new ArrayList<>();
+                        list.add(watchItem);
+                        new AddToWatchedListTask(mFragment.getActivity()) {
+                            @Override
+                            protected void onDone(List<WatchItem> addedList) {
+                                if (addedList == null) {
+                                    return;
+                                }
+                                for (WatchItem item : addedList) {
+                                    mWatchList.remove(item.getMovieId());
+
+                                    for (Iterator<Movie> it = mMovieList.iterator() ; it.hasNext() ;) {
+                                        Movie movie = it.next();
+                                        if (movie.getId().equals(item.getMovieId())) {
+                                            it.remove();
+                                        }
+                                    }
+                                }
+                                notifyDataSetChanged();
+                            }
+                        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, list);
+                    }
+                }
+            });
+            fragment.show(mFragment.getFragmentManager(), null);
         }
     }
 }

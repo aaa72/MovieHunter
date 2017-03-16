@@ -14,7 +14,7 @@ public class MovieDetail {
     public float popularity;
     public String poster_path;
     public String release_date;
-    public int revenue;
+    public long revenue;
     public int runtime;
     public String status;
     public String tagline;

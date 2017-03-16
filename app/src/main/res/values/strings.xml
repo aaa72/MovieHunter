@@ -10,4 +10,8 @@
     <string name="watch_history">Watch History</string>
     <string name="search_movie">Search Movie</string>
     <string name="back_again">Press back again to leave</string>
+    <string name="save_to_watched_movie">Saved to Watch History</string>
+    <string name="rating">Rating</string>
+    <string name="write_comment">Write movie experience</string>
+    <string name="save">save</string>
 </resources>

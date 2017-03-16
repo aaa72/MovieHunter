@@ -15,7 +15,7 @@ import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetMovieDetailTask;
-import com.leo.moviehunter.task.GetToWatchListTask;
+import com.leo.moviehunter.task.GetWatchedListTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
@@ -23,15 +23,15 @@ import com.leo.moviehunter.widget.MovieAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WatchListFragment extends Fragment {
-    private static final String TAG = "WatchListFragment";
+public class WatchedListFragment extends Fragment {
+    private static final String TAG = "WatchedListFragment";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
 
-    public static WatchListFragment newInstance() {
-        WatchListFragment fragment = new WatchListFragment();
+    public static WatchedListFragment newInstance() {
+        WatchedListFragment fragment = new WatchedListFragment();
         return fragment;
     }
 
@@ -40,7 +40,6 @@ public class WatchListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAdapter = new MovieAdapter(this);
-        mAdapter.setStatus2Enabled(true);
 
         // load image base url
         new GetImageBaseUrlTask() {
@@ -50,32 +49,32 @@ public class WatchListFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        new GetToWatchListTask(getActivity()) {
+        new GetWatchedListTask(getActivity()) {
             private final int FREQUENCY = 3;
             private ArrayList<Movie> mMovieList = new ArrayList<>();
             private int mCount = 0;
             @Override
-            protected void onGetToWatchList(final List<WatchItem> toWatchList) {
-                if (toWatchList == null) {
+            protected void onGetWatchedList(final List<WatchItem> watchedList) {
+                if (watchedList == null) {
                     return;
                 }
 
-                mAdapter.setWatchList(toWatchList);
+                mAdapter.setWatchList(watchedList);
 
-                for (WatchItem watchItem : toWatchList) {
+                for (WatchItem watchItem : watchedList) {
                     new GetMovieDetailTask(getActivity(), watchItem.getMovieId()) {
                         @Override
                         protected void onGetMovie(Movie movie) {
                             mMovieList.add(movie);
                             ++mCount;
-                            if (mCount == toWatchList.size()) {
-                                pushToAdapter();
+                            if (mCount == watchedList.size()) {
+                                addToAdapter();
                             } else if (mCount % FREQUENCY == 0) {
-                                pushToAdapter();
+                                addToAdapter();
                             }
                         }
 
-                        private void pushToAdapter() {
+                        private void addToAdapter() {
                             mAdapter.addMovies(mMovieList.toArray(new Movie[mMovieList.size()]), false);
                             mMovieList.clear();
                         }
@@ -104,6 +103,6 @@ public class WatchListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        MHUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.watch_list));
+        MHUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.watch_history));
     }
 }

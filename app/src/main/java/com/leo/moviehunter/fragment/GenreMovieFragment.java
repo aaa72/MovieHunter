@@ -19,9 +19,9 @@ import com.leo.moviehunter.task.DiscoverMoreMovieTask;
 import com.leo.moviehunter.task.GetGenresTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetToWatchListTask;
-import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
+import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
 
 import java.util.List;
@@ -124,7 +124,7 @@ public class GenreMovieFragment extends Fragment {
 
     private void setSubTitle() {
         if (mGenreName != null) {
-            CommonUtil.setActivityToolbarSubTitle(getActivity(), mGenreName);
+            MHUtil.setActivityToolbarSubTitle(getActivity(), mGenreName);
         }
     }
 

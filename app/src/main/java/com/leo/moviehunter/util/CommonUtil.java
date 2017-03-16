@@ -60,13 +60,4 @@ public class CommonUtil {
 
         return byteArray == null ? 0 : byteArray.length;
     }
-
-    public static void setActivityToolbarSubTitle(Activity activity, String title) {
-        try {
-            Method method = activity.getClass().getDeclaredMethod("setSubTitle", String.class);
-            method.invoke(activity, title);
-        } catch (Exception e) {
-            Log.w(TAG, "do not have setSubTitle method");
-        }
-    }
 }

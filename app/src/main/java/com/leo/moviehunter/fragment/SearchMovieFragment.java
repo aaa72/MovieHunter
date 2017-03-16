@@ -18,9 +18,9 @@ import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.task.SearchMovieTask;
-import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
+import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
 
 import java.util.List;
@@ -99,7 +99,7 @@ public class SearchMovieFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        CommonUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.search_movie) + " - " + mSearchString);
+        MHUtil.setActivityToolbarSubTitle(getActivity(), getString(R.string.search_movie) + " - " + mSearchString);
     }
 
     @UiThread

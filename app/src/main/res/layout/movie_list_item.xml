@@ -22,16 +22,34 @@
         android:scaleType="fitXY"
         />
 
-    <ImageView
-        android:id="@+id/movie_status"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:padding="15dp"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentRight="true"
+    <RelativeLayout
+        android:id="@+id/movie_status_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:scaleType="fitXY"
-        />
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        >
+
+        <ImageView
+            android:id="@+id/movie_status"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            />
+
+        <ImageView
+            android:id="@+id/movie_status_2"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_below="@id/movie_status"
+            android:src="@android:drawable/ic_menu_edit"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/movie_text_1"
@@ -40,7 +58,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="3dp"
         android:layout_toRightOf="@id/movie_image"
-        android:layout_toLeftOf="@id/movie_status"
+        android:layout_toLeftOf="@id/movie_status_container"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
