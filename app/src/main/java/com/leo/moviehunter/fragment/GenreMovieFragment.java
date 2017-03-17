@@ -47,6 +47,7 @@ public class GenreMovieFragment extends Fragment {
 
         mGenreId = getGenreId();
         mAdapter = new MovieAdapter(this);
+        mAdapter.setToWatchIconEnabled(true);
         mAdapter.setGetMoreMovieClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

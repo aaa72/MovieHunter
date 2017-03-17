@@ -39,7 +39,8 @@ public class WatchListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAdapter = new MovieAdapter(this);
-        mAdapter.setStatus2Enabled(true);
+        mAdapter.setToWatchIconEnabled(true);
+        mAdapter.setWatchedIconEnabled(true);
 
         new GetToWatchListTask(getActivity()) {
             private final int FREQUENCY = 3;

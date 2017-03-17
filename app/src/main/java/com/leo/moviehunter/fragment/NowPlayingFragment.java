@@ -48,6 +48,7 @@ public class NowPlayingFragment extends Fragment {
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         mAdapter = new MovieAdapter(this);
+        mAdapter.setToWatchIconEnabled(true);
         mAdapter.setGetMoreMovieClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

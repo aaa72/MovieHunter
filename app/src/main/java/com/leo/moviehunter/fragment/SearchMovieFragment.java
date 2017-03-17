@@ -46,6 +46,7 @@ public class SearchMovieFragment extends Fragment {
         mSearchString = getSearchString();
 
         mAdapter = new MovieAdapter(this);
+        mAdapter.setToWatchIconEnabled(true);
         mAdapter.setGetMoreMovieClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

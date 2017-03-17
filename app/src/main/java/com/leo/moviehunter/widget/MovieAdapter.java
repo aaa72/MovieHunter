@@ -27,6 +27,7 @@ import com.leo.moviehunter.task.AddToWatchedListTask;
 import com.leo.moviehunter.task.DeleteFromWatchListTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetToWatchListTask;
+import com.leo.moviehunter.task.GetWatchedListTask;
 import com.leo.moviehunter.util.Log;
 
 import java.util.ArrayList;
@@ -44,10 +45,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private String mImageBaseUrl;
     private final List<Movie> mMovieList = new ArrayList<>();
     private boolean mShowHasMoreButton = true;
-    private final Map<String, WatchItem> mWatchList = new HashMap<>();
+    private final Map<String, WatchItem> mToWatchMap = new HashMap<>();
+    private final Map<String, WatchItem> mWatchedMap = new HashMap<>();
     private final Drawable mStarOn;
     private final Drawable mStarOff;
-    private boolean mStatus2Enabled;
+    private boolean mToWatchIconEnabled;
+    private boolean mWatchedIconEnabled;
 
     public MovieAdapter(Fragment fragment) {
         mFragment = fragment;
@@ -65,7 +68,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             @Override
             public void onGetUrl(String url) {
                 setImageBaseUrl(url);
-
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
@@ -73,14 +75,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         new GetToWatchListTask(fragment.getActivity()) {
             @Override
             public void onGetToWatchList(List<WatchItem> toWatchList) {
-                setWatchList(toWatchList);
+                setToWatchMap(toWatchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-    }
 
-    public void setImageBaseUrl(String url) {
-        mImageBaseUrl = url;
-        notifyDataSetChanged();
+        // load watched list
+        new GetWatchedListTask(fragment.getActivity()) {
+            @Override
+            public void onGetWatchedList(List<WatchItem> watchedList) {
+                setWatchedMap(watchedList);
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
     public void setGetMoreMovieClickListener(OnClickListener listener) {
@@ -93,18 +98,37 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public void setWatchList(List<WatchItem> watchList) {
-        mWatchList.clear();
+    private void setImageBaseUrl(String url) {
+        mImageBaseUrl = url;
+        notifyDataSetChanged();
+    }
+
+    private void setToWatchMap(List<WatchItem> watchList) {
+        mToWatchMap.clear();
         if (watchList != null) {
             for (WatchItem watchItem : watchList) {
-                mWatchList.put(watchItem.getMovieId(), watchItem);
+                mToWatchMap.put(watchItem.getMovieId(), watchItem);
             }
         }
         notifyDataSetChanged();
     }
 
-    public void setStatus2Enabled(boolean enabled) {
-        mStatus2Enabled = enabled;
+    private void setWatchedMap(List<WatchItem> watchedList) {
+        mWatchedMap.clear();
+        if (watchedList != null) {
+            for (WatchItem watchItem : watchedList) {
+                mWatchedMap.put(watchItem.getMovieId(), watchItem);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void setToWatchIconEnabled(boolean enabled) {
+        mToWatchIconEnabled = enabled;
+    }
+
+    public void setWatchedIconEnabled(boolean enabled) {
+        mWatchedIconEnabled = enabled;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -129,8 +153,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             mStatusImage = (ImageView) itemView.findViewById(R.id.movie_status);
             mStatusOnClickListener = new StatusOnClickListener(mStatusImage);
             mStatusImage.setOnClickListener(mStatusOnClickListener);
+            mStatusImage.setVisibility(mToWatchIconEnabled ? View.VISIBLE : View.GONE);
             mStatus2Image = (ImageView) itemView.findViewById(R.id.movie_status_2);
-            mStatus2Image.setVisibility(mStatus2Enabled ? View.VISIBLE : View.GONE);
+            mStatus2Image.setVisibility(mWatchedIconEnabled ? View.VISIBLE : View.GONE);
             mStatus2OnClickListener = new Status2OnClickListener(mStatus2Image);
             mStatus2Image.setOnClickListener(mStatus2OnClickListener);
             mText1 = (TextView) itemView.findViewById(R.id.movie_text_1);
@@ -200,7 +225,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private void setupMovieStatus(ViewHolder holder, Movie movie) {
         holder.mStatusOnClickListener.setMovie(movie);
-        if (mWatchList.get(movie.getId()) != null) {
+        if (mToWatchMap.get(movie.getId()) != null) {
             holder.mStatusImage.setImageDrawable(mStarOn);
             holder.mStatusImage.setTag(mStarOn);
         } else {
@@ -241,7 +266,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void onClick(View v) {
             if (mStatusView.getTag() == mStarOn) {
                 List<WatchItem> list = new ArrayList<>();
-                list.add(mWatchList.get(mMovie.getId()));
+                list.add(mToWatchMap.get(mMovie.getId()));
                 new DeleteFromWatchListTask(mStatusView.getContext()) {
                     @Override
                     protected void onDone(List<WatchItem> deleteList) {
@@ -249,7 +274,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                             return;
                         }
                         for (WatchItem watchItem : deleteList) {
-                            mWatchList.remove(watchItem.getMovieId());
+                            mToWatchMap.remove(watchItem.getMovieId());
                         }
                     }
                 }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, list);
@@ -268,7 +293,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                             return;
                         }
                         for (WatchItem watchItem : addedList) {
-                            mWatchList.put(watchItem.getMovieId(), watchItem);
+                            mToWatchMap.put(watchItem.getMovieId(), watchItem);
                         }
                     }
                 }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, list);
@@ -300,7 +325,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     Log.d(TAG, "onEditDone() - movieId: " + movieId + ", score: " + score + ", comment: " + comment);
 
                     WatchItem watchItem;
-                    if ((watchItem = mWatchList.get(movieId)) != null) {
+                    if ((watchItem = mToWatchMap.get(movieId)) != null) {
                         ArrayList<WatchItem> list = new ArrayList<>();
                         list.add(watchItem);
                         new AddToWatchedListTask(mFragment.getActivity()) {
@@ -310,7 +335,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                                     return;
                                 }
                                 for (WatchItem item : addedList) {
-                                    mWatchList.remove(item.getMovieId());
+                                    mToWatchMap.remove(item.getMovieId());
 
                                     for (Iterator<Movie> it = mMovieList.iterator() ; it.hasNext() ;) {
                                         Movie movie = it.next();
