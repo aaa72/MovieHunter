@@ -16,16 +16,11 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
-import com.leo.moviehunter.data.user.WatchItem;
-import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetNowPlayingTask;
-import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.Application;
 import com.leo.moviehunter.widget.MovieAdapter;
-
-import java.util.List;
 
 public class NowPlayingFragment extends Fragment {
     private static final String TAG = "NowPlayingFragment";
@@ -66,21 +61,7 @@ public class NowPlayingFragment extends Fragment {
             }
         });
 
-        // load image base url
-        new GetImageBaseUrlTask() {
-            @Override
-            public void onGetUrl(String url) {
-                mAdapter.setImageBaseUrl(url);
-                getMoreMovie();
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-
-        new GetToWatchListTask(getActivity()) {
-            @Override
-            protected void onGetToWatchList(List<WatchItem> toWatchList) {
-                mAdapter.setWatchList(toWatchList);
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        getMoreMovie();
     }
 
     @Nullable

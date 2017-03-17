@@ -14,16 +14,11 @@ import android.view.ViewGroup;
 
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
-import com.leo.moviehunter.data.user.WatchItem;
-import com.leo.moviehunter.task.GetImageBaseUrlTask;
-import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.task.SearchMovieTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
-
-import java.util.List;
 
 public class SearchMovieFragment extends Fragment {
     private static final String TAG = "SearchMovieFragment";
@@ -58,21 +53,7 @@ public class SearchMovieFragment extends Fragment {
             }
         });
 
-        // load image base url
-        new GetImageBaseUrlTask() {
-            @Override
-            public void onGetUrl(String url) {
-                mAdapter.setImageBaseUrl(url);
-                getMoreMovie();
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-
-        new GetToWatchListTask(getActivity()) {
-            @Override
-            protected void onGetToWatchList(List<WatchItem> toWatchList) {
-                mAdapter.setWatchList(toWatchList);
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        getMoreMovie();
     }
 
     @Nullable

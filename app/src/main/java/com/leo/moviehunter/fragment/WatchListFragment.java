@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
-import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetMovieDetailTask;
 import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.Log;
@@ -42,14 +41,6 @@ public class WatchListFragment extends Fragment {
         mAdapter = new MovieAdapter(this);
         mAdapter.setStatus2Enabled(true);
 
-        // load image base url
-        new GetImageBaseUrlTask() {
-            @Override
-            public void onGetUrl(String url) {
-                mAdapter.setImageBaseUrl(url);
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-
         new GetToWatchListTask(getActivity()) {
             private final int FREQUENCY = 3;
             private ArrayList<Movie> mMovieList = new ArrayList<>();
@@ -59,9 +50,6 @@ public class WatchListFragment extends Fragment {
                 if (toWatchList == null) {
                     return;
                 }
-
-                mAdapter.setWatchList(toWatchList);
-
                 for (WatchItem watchItem : toWatchList) {
                     new GetMovieDetailTask(getActivity(), watchItem.getMovieId()) {
                         @Override

@@ -25,6 +25,8 @@ import com.leo.moviehunter.fragment.MovieDetailFragment;
 import com.leo.moviehunter.task.AddToWatchListTask;
 import com.leo.moviehunter.task.AddToWatchedListTask;
 import com.leo.moviehunter.task.DeleteFromWatchListTask;
+import com.leo.moviehunter.task.GetImageBaseUrlTask;
+import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.Log;
 
 import java.util.ArrayList;
@@ -57,6 +59,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             mStarOn = fragment.getActivity().getResources().getDrawable(android.R.drawable.btn_star_big_on, null);
             mStarOff = fragment.getActivity().getResources().getDrawable(android.R.drawable.btn_star_big_off, null);
         }
+
+        // load image base url
+        new GetImageBaseUrlTask() {
+            @Override
+            public void onGetUrl(String url) {
+                setImageBaseUrl(url);
+
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        // load watch list
+        new GetToWatchListTask(fragment.getActivity()) {
+            @Override
+            public void onGetToWatchList(List<WatchItem> toWatchList) {
+                setWatchList(toWatchList);
+            }
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
     public void setImageBaseUrl(String url) {

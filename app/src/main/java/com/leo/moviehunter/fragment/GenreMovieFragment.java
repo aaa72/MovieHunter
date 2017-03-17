@@ -14,17 +14,12 @@ import android.view.ViewGroup;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Genre;
 import com.leo.moviehunter.data.Movie;
-import com.leo.moviehunter.data.user.WatchItem;
 import com.leo.moviehunter.task.DiscoverMoreMovieTask;
 import com.leo.moviehunter.task.GetGenresTask;
-import com.leo.moviehunter.task.GetImageBaseUrlTask;
-import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
-
-import java.util.List;
 
 public class GenreMovieFragment extends Fragment {
     private static final String TAG = "GenreMovieFragment";
@@ -72,22 +67,6 @@ public class GenreMovieFragment extends Fragment {
                         break;
                     }
                 }
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-
-        // load image base url
-        new GetImageBaseUrlTask() {
-            @Override
-            public void onGetUrl(String url) {
-                mAdapter.setImageBaseUrl(url);
-            }
-        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-
-        // get watch list
-        new GetToWatchListTask(getActivity()) {
-            @Override
-            public void onGetToWatchList(List<WatchItem> toWatchList) {
-                mAdapter.setWatchList(toWatchList);
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
