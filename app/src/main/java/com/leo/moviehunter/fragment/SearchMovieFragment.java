@@ -20,9 +20,14 @@ import com.leo.moviehunter.util.MHConstants;
 import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.MovieAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class SearchMovieFragment extends Fragment {
     private static final String TAG = "SearchMovieFragment";
 
+    private final List<Movie> mMovieList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
@@ -46,7 +51,7 @@ public class SearchMovieFragment extends Fragment {
         mSearchString = getSearchString();
 
         mAdapter = new MovieAdapter(this);
-        mAdapter.setToWatchIconEnabled(true);
+        mAdapter.setMovieList(mMovieList);
         mAdapter.setGetMoreMovieClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +113,9 @@ public class SearchMovieFragment extends Fragment {
                 }
                 Log.d(TAG, "current page: " + page + ", page size: " + movies.length);
 
-                mAdapter.addMovies(movies, page < totalPages);
+                mAdapter.showHasMoreButton(page < totalPages);
+                mMovieList.addAll(Arrays.asList(movies));
+                mAdapter.notifyDataSetChanged();
                 mIsLoadingMovie = false;
             }
 

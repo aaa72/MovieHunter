@@ -31,9 +31,4 @@ public class UserDataStore {
         String MovieId = "movie_id";
         String GenreId = "genre_id";
     }
-
-    public interface Status {
-        int TO_WATCH = 0x1;
-        int WATCHED = 0x2;
-    }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/background_dark"
+              android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/popup_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/edit"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+        />
+
+    <TextView
+        android:id="@+id/popup_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/delete"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+        />
+    />
+</LinearLayout>

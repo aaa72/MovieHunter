@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.leo.moviehunter.data.user.WatchItem.Status;
 import com.leo.moviehunter.provider.UserDataStore;
 import com.leo.moviehunter.provider.UserDataStore.TableMovieGenre;
 import com.leo.moviehunter.provider.UserDataStore.TableWatchList;
@@ -20,13 +21,13 @@ public class UserDataHelper {
 
     public static List<WatchItem> getToWatchList(Context context) {
         final String where = TableWatchList.Status + " & ? != 0";
-        final String[] whereArgs = new String[] {String.valueOf(UserDataStore.Status.TO_WATCH)};
+        final String[] whereArgs = new String[] {String.valueOf(Status.TO_WATCH)};
         return _getWatchList(context, where, whereArgs, null);
     }
 
     public static List<WatchItem> getWatchedList(Context context) {
         final String where = TableWatchList.Status + " & ? != 0";
-        final String[] whereArgs = new String[] {String.valueOf(UserDataStore.Status.WATCHED)};
+        final String[] whereArgs = new String[] {String.valueOf(Status.WATCHED)};
         return _getWatchList(context, where, whereArgs, null);
     }
 
@@ -86,7 +87,7 @@ public class UserDataHelper {
 
     public static int addToWatchList(Context context, List<WatchItem> list) {
         for (WatchItem watchItem : list) {
-            watchItem.setStatus(watchItem.getStatus() | UserDataStore.Status.TO_WATCH);
+            watchItem.setStatus(watchItem.getStatus() | Status.TO_WATCH);
             watchItem.setAddedEpochTime(System.currentTimeMillis());
         }
         return _addToWatchList(context, list);
@@ -94,7 +95,7 @@ public class UserDataHelper {
 
     public static int addToWatchedList(Context context, List<WatchItem> list) {
         for (WatchItem watchItem : list) {
-            watchItem.setStatus(watchItem.getStatus() ^ UserDataStore.Status.TO_WATCH | UserDataStore.Status.WATCHED);
+            watchItem.setStatus(watchItem.getStatus() & ~Status.TO_WATCH | Status.WATCHED);
             watchItem.setWatchedEpochTime(System.currentTimeMillis());
         }
         return _addToWatchList(context, list);
@@ -150,7 +151,7 @@ public class UserDataHelper {
 
     public static int deleteFromToWatchList(Context context, List<WatchItem> list) {
         for (WatchItem watchItem : list) {
-            watchItem.setStatus(watchItem.getStatus() ^ UserDataStore.Status.TO_WATCH);
+            watchItem.setStatus(watchItem.getStatus() ^ Status.TO_WATCH);
             watchItem.setAddedEpochTime(0);
         }
         return _deleteFromWatchList(context, list);
@@ -158,7 +159,7 @@ public class UserDataHelper {
 
     public static int deleteFromWatchedList(Context context, List<WatchItem> list) {
         for (WatchItem watchItem : list) {
-            watchItem.setStatus(watchItem.getStatus() ^ UserDataStore.Status.WATCHED);
+            watchItem.setStatus(watchItem.getStatus() ^ Status.WATCHED);
             watchItem.setWatchedEpochTime(0);
         }
         return _deleteFromWatchList(context, list);

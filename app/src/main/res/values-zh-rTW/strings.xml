@@ -10,8 +10,12 @@
     <string name="watch_history">觀看紀錄</string>
     <string name="search_movie">搜尋電影</string>
     <string name="back_again">再按一次離開</string>
-    <string name="save_to_watched_movie">儲存至已觀看歷史</string>
+    <string name="save_to_watched_movie">儲存至已觀看電影</string>
     <string name="rating">評分</string>
     <string name="write_comment">撰寫電影心得</string>
     <string name="save">儲存</string>
+    <string name="edit">編輯</string>
+    <string name="delete">刪除</string>
+    <string name="edit_watched_movie">編輯已觀看電影</string>
+    <string name="comment">評論</string>
 </resources>

@@ -13,5 +13,9 @@
     <string name="save_to_watched_movie">Saved to Watch History</string>
     <string name="rating">Rating</string>
     <string name="write_comment">Write movie experience</string>
-    <string name="save">save</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="edit_watched_movie">Edit Watched Movie</string>
+    <string name="comment">Comment</string>
 </resources>

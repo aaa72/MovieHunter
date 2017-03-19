@@ -25,6 +25,7 @@ import java.util.List;
 public class WatchedListFragment extends Fragment {
     private static final String TAG = "WatchedListFragment";
 
+    private final List<Movie> mMovieList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
@@ -39,12 +40,9 @@ public class WatchedListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAdapter = new MovieAdapter(this);
-        mAdapter.setWatchedIconEnabled(true);
+        mAdapter.setMovieList(mMovieList);
 
         new GetWatchedListTask(getActivity()) {
-            private final int FREQUENCY = 3;
-            private ArrayList<Movie> mMovieList = new ArrayList<>();
-            private int mCount = 0;
             @Override
             protected void onGetWatchedList(final List<WatchItem> watchedList) {
                 if (watchedList == null) {
@@ -56,17 +54,7 @@ public class WatchedListFragment extends Fragment {
                         @Override
                         protected void onGetMovie(Movie movie) {
                             mMovieList.add(movie);
-                            ++mCount;
-                            if (mCount == watchedList.size()) {
-                                addToAdapter();
-                            } else if (mCount % FREQUENCY == 0) {
-                                addToAdapter();
-                            }
-                        }
-
-                        private void addToAdapter() {
-                            mAdapter.addMovies(mMovieList.toArray(new Movie[mMovieList.size()]), false);
-                            mMovieList.clear();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
                 }

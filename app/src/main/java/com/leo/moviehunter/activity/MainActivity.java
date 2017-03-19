@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         clearAllFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame, GenreMainFragment.newInstance());
+        transaction.replace(R.id.frame, WatchListFragment.newInstance());
         transaction.commit();
     }
 

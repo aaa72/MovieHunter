@@ -10,81 +10,115 @@
         android:layout_height="match_parent"
         >
 
-    <ImageView
-        android:id="@+id/movie_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:scaleType="fitXY"
-        />
-
-    <RelativeLayout
-        android:id="@+id/movie_status_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        >
-
         <ImageView
-            android:id="@+id/movie_status"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:padding="10dp"
+            android:id="@+id/movie_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:scaleType="fitXY"
             />
 
-        <ImageView
-            android:id="@+id/movie_status_2"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_below="@id/movie_status"
-            android:src="@android:drawable/ic_menu_edit"
-            android:padding="10dp"
-            android:scaleType="fitXY"
-            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/movie_status_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            >
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/icon_star_off"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/star_big_off"
+                android:visibility="gone"
+                />
 
-    <TextView
-        android:id="@+id/movie_text_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="3dp"
-        android:layout_toRightOf="@id/movie_image"
-        android:layout_toLeftOf="@id/movie_status_container"
-        android:maxLines="1"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            <ImageView
+                android:id="@+id/icon_star_on"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/star_big_on"
+                android:visibility="gone"
+                />
 
-    <TextView
-        android:id="@+id/movie_text_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/movie_text_1"
-        android:layout_alignRight="@id/movie_text_1"
-        android:layout_below="@id/movie_text_1"
-        android:layout_marginTop="3dp"
-        android:maxLines="1"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            <ImageView
+                android:id="@+id/icon_edit"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/ic_menu_edit"
+                android:visibility="gone"
+                />
 
-    <TextView
-        android:id="@+id/movie_text_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/movie_text_2"
-        android:layout_alignRight="@id/movie_text_2"
-        android:layout_below="@id/movie_text_2"
-        android:layout_marginTop="3dp"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            <ImageView
+                android:id="@+id/icon_watched"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/ic_menu_view"
+                android:visibility="gone"
+                />
 
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/movie_text_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="3dp"
+            android:layout_toLeftOf="@id/movie_status_container"
+            android:layout_toRightOf="@id/movie_image"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        <TextView
+            android:id="@+id/movie_text_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/movie_text_1"
+            android:layout_alignRight="@id/movie_text_1"
+            android:layout_below="@id/movie_text_1"
+            android:layout_marginTop="3dp"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        <TextView
+            android:id="@+id/movie_text_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/movie_text_1"
+            android:layout_alignRight="@id/movie_text_1"
+            android:layout_below="@id/movie_text_2"
+            android:layout_marginTop="3dp"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        <TextView
+            android:id="@+id/movie_text_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/movie_text_1"
+            android:layout_alignRight="@id/movie_text_1"
+            android:layout_below="@id/movie_text_3"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            />
     </RelativeLayout>
 
     <RelativeLayout
@@ -93,13 +127,13 @@
         android:layout_height="75dp"
         android:visibility="gone"
         >
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:layout_centerInParent="true"
-        />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:layout_centerInParent="true"
+            />
     </RelativeLayout>
 
 </RelativeLayout>

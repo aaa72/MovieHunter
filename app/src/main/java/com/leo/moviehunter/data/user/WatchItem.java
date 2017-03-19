@@ -71,4 +71,18 @@ public class WatchItem {
     public void setScore(float score) {
         mScore = score;
     }
+
+
+    public interface Status {
+        int TO_WATCH = 0x1;
+        int WATCHED = 0x2;
+    }
+
+    public static boolean isToWatch(WatchItem watchItem) {
+        return watchItem != null && (watchItem.getStatus() & Status.TO_WATCH) == Status.TO_WATCH;
+    }
+
+    public static boolean isWatched(WatchItem watchItem) {
+        return watchItem != null && (watchItem.getStatus() & Status.WATCHED) == Status.WATCHED;
+    }
 }

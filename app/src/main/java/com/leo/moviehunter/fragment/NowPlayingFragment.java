@@ -22,9 +22,14 @@ import com.leo.moviehunter.util.MHUtil;
 import com.leo.moviehunter.widget.Application;
 import com.leo.moviehunter.widget.MovieAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class NowPlayingFragment extends Fragment {
     private static final String TAG = "NowPlayingFragment";
 
+    private final List<Movie> mMovieList = new ArrayList<>();
     private Tracker mTracker;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -48,7 +53,7 @@ public class NowPlayingFragment extends Fragment {
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         mAdapter = new MovieAdapter(this);
-        mAdapter.setToWatchIconEnabled(true);
+        mAdapter.setMovieList(mMovieList);
         mAdapter.setGetMoreMovieClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +117,9 @@ public class NowPlayingFragment extends Fragment {
                 }
                 Log.d(TAG, "current page: " + page + ", page size: " + movies.length);
 
-                mAdapter.addMovies(movies, page < totalPages);
+                mAdapter.showHasMoreButton(page < totalPages);
+                mMovieList.addAll(Arrays.asList(movies));
+                mAdapter.notifyDataSetChanged();
                 mIsLoadingMovie = false;
             }
 
