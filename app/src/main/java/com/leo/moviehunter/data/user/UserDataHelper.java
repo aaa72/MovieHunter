@@ -96,7 +96,6 @@ public class UserDataHelper {
     public static int addToWatchedList(Context context, List<WatchItem> list) {
         for (WatchItem watchItem : list) {
             watchItem.setStatus(watchItem.getStatus() & ~Status.TO_WATCH | Status.WATCHED);
-            watchItem.setWatchedEpochTime(System.currentTimeMillis());
         }
         return _addToWatchList(context, list);
     }

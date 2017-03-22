@@ -18,4 +18,5 @@
     <string name="delete">Delete</string>
     <string name="edit_watched_movie">Edit Watched Movie</string>
     <string name="comment">Comment</string>
+    <string name="watch_date">Watch Date</string>
 </resources>

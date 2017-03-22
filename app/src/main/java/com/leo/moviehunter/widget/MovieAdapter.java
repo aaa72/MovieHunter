@@ -36,7 +36,10 @@ import com.leo.moviehunter.task.GetWatchedListTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private final Map<String, Genre> mGenreMap = new HashMap<>();
     private final Map<String, WatchItem> mToWatchMap = new HashMap<>();
     private final Map<String, WatchItem> mWatchedMap = new HashMap<>();
+    private final DateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private List<Movie> mMovieList;
     private String mImageBaseUrl;
     private boolean mShowHasMoreButton = false;
@@ -210,7 +214,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.mText1.setText(movie.getTitle() + " / " + movie.getOriginalTitle());
         holder.mText2.setText(Html.fromHtml(context.getString(R.string.score) + " " + movie.getScore()
                 + (watched != null ? "&nbsp&nbsp&nbsp&nbsp<font color=red>" + context.getString(R.string.rating) + " " + watched.getScore() + "</font>" : "")));
-        holder.mText3.setText(movie.getReleaseDate());
+        holder.mText3.setText(Html.fromHtml(movie.getReleaseDate()
+                + (watched != null ? "&nbsp&nbsp&nbsp&nbsp<font color=red>(" + mDateFormat.format(new Date(watched.getWatchedEpochTime())) + ")</font>" : "")));
         holder.mText4.setText(watched != null
                 ? Html.fromHtml("<font color=red>" + context.getString(R.string.comment) + " " + watched.getComment() + "</font>")
                 : MHUtil.genreIdsToString(movie.getGenreIds(), mGenreMap)
@@ -305,10 +310,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         EditWatchedMovieFragment fragment = EditWatchedMovieFragment.newInstance(movie, watchItem);
         fragment.setOnEditDoneListener(new OnEditDoneListener() {
             @Override
-            public void onEditDone(String movieId, float score, String comment) {
-                Log.d(TAG, "onEditDone() - movieId: " + movieId + ", score: " + score + ", comment: " + comment);
+            public void onEditDone(String movieId, float score, long watchDate, String comment) {
+                Log.d(TAG, "onEditDone() - movieId: " + movieId + ", score: " + score + ", watchDate: " + watchDate + ", comment: " + comment);
 
                 watchItem.setScore(score);
+                watchItem.setWatchedEpochTime(watchDate);
                 watchItem.setComment(comment);
                 ArrayList<WatchItem> list = new ArrayList<>();
                 list.add(watchItem);
