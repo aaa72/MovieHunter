@@ -6,7 +6,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.SpannedString;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ import com.leo.moviehunter.task.GetGenresTask;
 import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.task.GetToWatchListTask;
 import com.leo.moviehunter.task.GetWatchedListTask;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHUtil;
 
@@ -40,7 +43,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +50,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private static final String TAG = "MovieAdapter";
 
     private final Fragment mFragment;
-    private final Map<String, Genre> mGenreMap = new HashMap<>();
-    private final Map<String, WatchItem> mToWatchMap = new HashMap<>();
-    private final Map<String, WatchItem> mWatchedMap = new HashMap<>();
+    private final Map<String, Genre> mGenreMap = new ArrayMap<>();
+    private final Map<String, WatchItem> mToWatchMap = new ArrayMap<>();
+    private final Map<String, WatchItem> mWatchedMap = new ArrayMap<>();
     private final DateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private List<Movie> mMovieList;
     private String mImageBaseUrl;
@@ -211,15 +213,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     .crossFade()
                     .into(holder.mImage);
         }
+
         holder.mText1.setText(movie.getTitle() + " / " + movie.getOriginalTitle());
-        holder.mText2.setText(Html.fromHtml(context.getString(R.string.score) + " " + movie.getScore()
-                + (watched != null ? "&nbsp&nbsp&nbsp&nbsp<font color=red>" + context.getString(R.string.rating) + " " + watched.getScore() + "</font>" : "")));
-        holder.mText3.setText(Html.fromHtml(movie.getReleaseDate()
-                + (watched != null ? "&nbsp&nbsp&nbsp&nbsp<font color=red>(" + mDateFormat.format(new Date(watched.getWatchedEpochTime())) + ")</font>" : "")));
-        holder.mText4.setText(watched != null
-                ? Html.fromHtml("<font color=red>" + context.getString(R.string.comment) + " " + watched.getComment() + "</font>")
-                : MHUtil.genreIdsToString(movie.getGenreIds(), mGenreMap)
-        );
+        holder.mText2.setText(context.getString(R.string.score) + " " + movie.getScore());
+        holder.mText3.setText(movie.getReleaseDate());
+        holder.mText4.setText(MHUtil.genreIdsToString(movie.getGenreIds(), mGenreMap));
+        if (watched != null) {
+            holder.mText2.append("        ");
+            holder.mText2.append(CommonUtil.toHtmlColorSpanned("red", context.getString(R.string.rating) + " " + watched.getScore()));
+            holder.mText3.append("  ");
+            holder.mText3.append(CommonUtil.toHtmlColorSpanned("red", mDateFormat.format(new Date(watched.getWatchedEpochTime()))));
+            holder.mText4.setText(CommonUtil.toHtmlColorSpanned("red", context.getString(R.string.comment) + " " + watched.getComment()));
+        }
         holder.mMovieOnClickListener.setMovie(movie);
         holder.mIconStarOffOnClickListener.setMovie(movie);
         holder.mIconStarOnOnClickListener.setMovie(movie);
@@ -311,7 +316,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         fragment.setOnEditDoneListener(new OnEditDoneListener() {
             @Override
             public void onEditDone(String movieId, float score, long watchDate, String comment) {
-                Log.d(TAG, "onEditDone() - movieId: " + movieId + ", score: " + score + ", watchDate: " + watchDate + ", comment: " + comment);
+                Log.d(TAG, "onEditDone() - movieId: " + movieId + ", score: " + score + ", watchDate: " + mDateFormat.format(watchDate) + ", comment: " + comment);
 
                 watchItem.setScore(score);
                 watchItem.setWatchedEpochTime(watchDate);
@@ -372,7 +377,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         @Override
         public void onClick(View v) {
             FragmentTransaction transaction = mFragment.getFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame, MovieDetailFragment.newInstance(mMovie.getId()));
+            transaction.replace(R.id.frame, MovieDetailFragment.newInstance(mMovie, mWatchedMap.get(mMovie.getId())));
             transaction.addToBackStack(null);
             transaction.commit();
         }

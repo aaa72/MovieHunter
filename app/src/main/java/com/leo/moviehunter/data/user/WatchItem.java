@@ -1,6 +1,11 @@
 package com.leo.moviehunter.data.user;
 
-public class WatchItem {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class WatchItem implements Parcelable {
+
+    public WatchItem() {}
 
     private String mMovieId;
 
@@ -72,6 +77,41 @@ public class WatchItem {
         mScore = score;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mMovieId);
+        dest.writeInt(mStatus);
+        dest.writeLong(mAddedEpochTime);
+        dest.writeLong(mWatchedEpochTime);
+        dest.writeStringArray(mGenreIds);
+        dest.writeString(mComment);
+        dest.writeFloat(mScore);
+    }
+
+    private WatchItem(Parcel in) {
+        mMovieId = in.readString();
+        mStatus = in.readInt();
+        mAddedEpochTime = in.readLong();
+        mWatchedEpochTime = in.readLong();
+        mGenreIds = in.createStringArray();
+        mComment = in.readString();
+        mScore = in.readFloat();
+    }
+
+    public static final Parcelable.Creator<WatchItem> CREATOR = new Parcelable.Creator<WatchItem>() {
+        public WatchItem createFromParcel(Parcel in) {
+            return new WatchItem(in);
+        }
+
+        public WatchItem[] newArray(int size) {
+            return new WatchItem[size];
+        }
+    };
 
     public interface Status {
         int TO_WATCH = 0x1;

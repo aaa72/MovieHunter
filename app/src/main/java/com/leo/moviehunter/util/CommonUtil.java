@@ -1,6 +1,8 @@
 package com.leo.moviehunter.util;
 
 import android.app.Activity;
+import android.text.Html;
+import android.text.Spanned;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -59,5 +61,9 @@ public class CommonUtil {
         byte[] byteArray = byteArrayOutputStream.toByteArray();
 
         return byteArray == null ? 0 : byteArray.length;
+    }
+
+    public static Spanned toHtmlColorSpanned(String color, String text) {
+        return Html.fromHtml("<font color='" + color + "'>" + text + "</font>");
     }
 }

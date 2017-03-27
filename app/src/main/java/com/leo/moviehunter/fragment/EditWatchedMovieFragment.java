@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
+import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHConstants;
 import com.leo.moviehunter.util.MHUtil;
@@ -55,7 +56,7 @@ public class EditWatchedMovieFragment extends DialogFragment {
         Gson gson = new Gson();
         bundle.putString(MHConstants.BUNDLE_KEY_MOVIE_JSON, gson.toJson(movie));
         if (watchItem != null) {
-            bundle.putString(MHConstants.BUNDLE_KEY_WATCH_ITEM_JSON, gson.toJson(watchItem));
+            bundle.putParcelable(MHConstants.BUNDLE_KEY_WATCH_ITEM, watchItem);
         }
         fragment.setArguments(bundle);
         return fragment;
@@ -67,16 +68,16 @@ public class EditWatchedMovieFragment extends DialogFragment {
         if (getArguments() != null) {
             Gson gson = new Gson();
             mMovie = gson.fromJson(getArguments().getString(MHConstants.BUNDLE_KEY_MOVIE_JSON), Movie.class);
-            if (getArguments().containsKey(MHConstants.BUNDLE_KEY_WATCH_ITEM_JSON)) {
-                mWatchItem = gson.fromJson(getArguments().getString(MHConstants.BUNDLE_KEY_WATCH_ITEM_JSON), WatchItem.class);
+            if (getArguments().containsKey(MHConstants.BUNDLE_KEY_WATCH_ITEM)) {
+                mWatchItem = getArguments().getParcelable(MHConstants.BUNDLE_KEY_WATCH_ITEM);
             }
         }
 
         final View customView = getActivity().getLayoutInflater().inflate(R.layout.fragment_edit_watched_movie, null);
         mTitle = (TextView) customView.findViewById(R.id.title);
-        mScoreText = (TextView) customView.findViewById(R.id.score);
-        mRatingBar = (RatingBar) customView.findViewById(R.id.rating);
-        mWatchDateText = (TextView) customView.findViewById(R.id.date);
+        mScoreText = (TextView) customView.findViewById(R.id.score_title);
+        mRatingBar = (RatingBar) customView.findViewById(R.id.rating_bar);
+        mWatchDateText = (TextView) customView.findViewById(R.id.date_title);
         mCommentText = (EditText) customView.findViewById(R.id.comment);
 
         mWatchDateText.setOnClickListener(new OnClickListener() {
@@ -156,7 +157,7 @@ public class EditWatchedMovieFragment extends DialogFragment {
     }
 
     private void updateDateText() {
-        mWatchDateText.setText(mDateFormat.format(mWatchDate.getTime()));
+        mWatchDateText.setText(CommonUtil.toHtmlColorSpanned("blue", mDateFormat.format(mWatchDate.getTime())));
     }
 
     private static float score2Star(int score) {

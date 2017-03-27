@@ -64,6 +64,107 @@
         
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/watched_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            >
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="3dp"
+                >
+
+                <TextView
+                    android:id="@+id/score_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/score"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    tools:text="98"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="3dp"
+                >
+
+                <TextView
+                    android:id="@+id/date_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/watch_date"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    tools:text="2017-03-22"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="3dp"
+                >
+
+                <TextView
+                    android:id="@+id/comment_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comment"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+                <TextView
+                    android:id="@+id/comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    tools:text="這真是太好看了"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+            </TableRow>
+        </TableLayout>
+
+        <ImageView
+            android:id="@+id/icon_edit"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            android:src="@android:drawable/ic_menu_edit"
+            />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/content"
         android:layout_width="match_parent"
