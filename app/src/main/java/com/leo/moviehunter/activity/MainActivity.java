@@ -1,5 +1,6 @@
 package com.leo.moviehunter.activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -38,6 +39,22 @@ public class MainActivity extends AppCompatActivity {
     private SearchView mSearchView;
     private boolean mLeaveFlag;
 
+    private static class DrawerItem {
+        String title;
+        Class<?> fragment;
+        public DrawerItem(String title, Class<?> fragment) {
+            this.title = title;
+            this.fragment = fragment;
+        }
+
+        @Override
+        public String toString() {
+            return title;
+        }
+    }
+
+    private DrawerItem[] mDrawerItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,14 +65,15 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 //        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
+        mDrawerItems = new DrawerItem[] {
+                new DrawerItem(getString(R.string.genre), GenreMainFragment.class),
+                new DrawerItem(getString(R.string.now_playing), NowPlayingFragment.class),
+                new DrawerItem(getString(R.string.search_movie), SearchMovieFragment.class),
+                new DrawerItem(getString(R.string.watch_list), WatchListFragment.class),
+                new DrawerItem(getString(R.string.watch_history), WatchedListFragment.class),
+        };
         mDrawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1,
-                new String[] {
-                        getString(R.string.genre),              // 0
-                        getString(R.string.now_playing),        // 1
-                        getString(R.string.search_movie),       // 2
-                        getString(R.string.watch_list),         // 3
-                        getString(R.string.watch_history),      // 4
-                }
+                mDrawerItems
                 ));
         mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
 
@@ -151,43 +169,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Log.d(TAG, "onItemClick() - position: " + position);
-            switch(position) {
-                case 0: {
-                    clearAllFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame, GenreMainFragment.newInstance());
-                    transaction.commit();
-                }
-                break;
 
-                case 1: {
-                    clearAllFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame, NowPlayingFragment.newInstance());
-                    transaction.commit();
-                }
-                break;
+            if (position >= 0 && position < mDrawerItems.length) {
 
-                case 2: {
-                    mSearchView.setIconified(false);
-                }
-                break;
+                switch (position) {
+                    case 2:
+                        mSearchView.setIconified(false);
+                        break;
 
-                case 3: {
-                    clearAllFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame, WatchListFragment.newInstance());
-                    transaction.commit();
+                    default:
+                        clearAllFragment();
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        try {
+                            transaction.replace(R.id.frame, (Fragment) mDrawerItems[position].fragment.newInstance());
+                            transaction.commit();
+                        } catch (Exception e) {
+                        }
                 }
-                break;
-
-                case 4: {
-                    clearAllFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame, WatchedListFragment.newInstance());
-                    transaction.commit();
-                }
-                break;
             }
             mDrawerLayout.closeDrawer(DRAWER_GRAVITY);
         }
