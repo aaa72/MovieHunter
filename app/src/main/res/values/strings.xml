@@ -19,4 +19,6 @@
     <string name="edit_watched_movie">Edit Watched Movie</string>
     <string name="comment">Comment</string>
     <string name="watch_date">Watch Date</string>
+    <string name="login_account">Login Account</string>
+    <string name="logout_account">Logout Account</string>
 </resources>

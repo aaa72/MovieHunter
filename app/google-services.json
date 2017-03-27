@@ -11,7 +11,20 @@
           "package_name": "com.leo.moviehunter"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "574397650066-5lddm32qhsmh9f0u5a01ngg4j8k0j6pq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.leo.moviehunter",
+            "certificate_hash": "8baaa068d589e3d2388204799797a1ae28d44cfa"
+          }
+        },
+        {
+          "client_id": "574397650066-r9rfrcifgrgl9el4n3fqvabvmkdi9vl6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA_7PHpOUgldyjja0HfyiJuqk6Rr1S3wH8"

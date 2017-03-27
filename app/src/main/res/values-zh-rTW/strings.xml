@@ -19,4 +19,6 @@
     <string name="edit_watched_movie">編輯已觀看電影</string>
     <string name="comment">評論</string>
     <string name="watch_date">觀看日期</string>
+    <string name="login_account">登入帳戶</string>
+    <string name="logout_account">帳戶登出</string>
 </resources>
