@@ -3,12 +3,15 @@ package com.leo.moviehunter.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -227,14 +230,24 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(signInIntent, RC_SIGN_IN);
         } else {
             // sign out
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.confirm_logout)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onResult(Status status) {
-                            Log.d(TAG, "sign out status: " + status);
-                            handleSignInResult(null);
+                        public void onClick(DialogInterface dialog, int which) {
+                            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                                    new ResultCallback<Status>() {
+                                        @Override
+                                        public void onResult(Status status) {
+                                            Log.d(TAG, "sign out status: " + status);
+                                            handleSignInResult(null);
+                                        }
+                                    });
                         }
-                    });
+                    })
+                    .setNegativeButton(android.R.string.cancel, null).create().show();
+
+
         }
     }
 

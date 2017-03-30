@@ -21,4 +21,5 @@
     <string name="watch_date">觀看日期</string>
     <string name="login_account">登入帳戶</string>
     <string name="logout_account">帳戶登出</string>
+    <string name="confirm_logout">確定要登出？</string>
 </resources>
