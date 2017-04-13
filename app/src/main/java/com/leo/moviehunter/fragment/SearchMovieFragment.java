@@ -24,11 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SearchMovieFragment extends Fragment {
     private static final String TAG = "SearchMovieFragment";
 
     private final List<Movie> mMovieList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recycler) RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
     private int mNextMoviePage = 1;
@@ -68,8 +71,8 @@ public class SearchMovieFragment extends Fragment {
         Log.d(TAG, "onCreateView");
 
         View root = inflater.inflate(R.layout.fragment_now_playing, container, false);
+        ButterKnife.bind(this, root);
 
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);

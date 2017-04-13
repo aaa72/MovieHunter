@@ -46,6 +46,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private static final String TAG = "MovieAdapter";
 
@@ -130,17 +133,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ViewGroup mContainer;
-        private ViewGroup mMovieContainer;
-        private ImageView mImage;
-        private ImageView mIconStarOff;
-        private ImageView mIconStarOn;
-        private ImageView mIconEdit;
-        private ImageView mIconWatched;
-        private TextView mText1;
-        private TextView mText2;
-        private TextView mText3;
-        private TextView mText4;
-        private ViewGroup mGetMoreContainer;
+        @BindView(R.id.movie_container) ViewGroup mMovieContainer;
+        @BindView(R.id.movie_image) ImageView mImage;
+        @BindView(R.id.icon_star_off) ImageView mIconStarOff;
+        @BindView(R.id.icon_star_on) ImageView mIconStarOn;
+        @BindView(R.id.icon_edit) ImageView mIconEdit;
+        @BindView(R.id.icon_watched) ImageView mIconWatched;
+        @BindView(R.id.movie_text_1) TextView mText1;
+        @BindView(R.id.movie_text_2) TextView mText2;
+        @BindView(R.id.movie_text_3) TextView mText3;
+        @BindView(R.id.movie_text_4) TextView mText4;
+        @BindView(R.id.get_more_container) ViewGroup mGetMoreContainer;
         private MovieOnClickListener mMovieOnClickListener;
         private IconStarOffOnClickListener mIconStarOffOnClickListener;
         private IconStarOnOnClickListener mIconStarOnOnClickListener;
@@ -150,28 +153,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public ViewHolder(View itemView) {
             super(itemView);
             mContainer = (ViewGroup) itemView;
-            mMovieContainer = (ViewGroup) itemView.findViewById(R.id.movie_container);
-            mImage = (ImageView) itemView.findViewById(R.id.movie_image);
-            mIconStarOff = (ImageView) itemView.findViewById(R.id.icon_star_off);
+            ButterKnife.bind(this, itemView);
             mIconStarOffOnClickListener = new IconStarOffOnClickListener(this);
             mIconStarOff.setOnClickListener(mIconStarOffOnClickListener);
-            mIconStarOn = (ImageView) itemView.findViewById(R.id.icon_star_on);
             mIconStarOnOnClickListener = new IconStarOnOnClickListener(this);
             mIconStarOn.setOnClickListener(mIconStarOnOnClickListener);
-            mIconEdit = (ImageView) itemView.findViewById(R.id.icon_edit);
             mIconEditOnClickListener = new IconEditOnClickListener(this);
             mIconEdit.setOnClickListener(mIconEditOnClickListener);
-            mIconWatched = (ImageView) itemView.findViewById(R.id.icon_watched);
             mIconWatchedOnClickListener = new IconWatchedOnClickListener(this);
             mIconWatched.setOnClickListener(mIconWatchedOnClickListener);
-            mText1 = (TextView) itemView.findViewById(R.id.movie_text_1);
-            mText2 = (TextView) itemView.findViewById(R.id.movie_text_2);
-            mText3 = (TextView) itemView.findViewById(R.id.movie_text_3);
-            mText4 = (TextView) itemView.findViewById(R.id.movie_text_4);
             mMovieOnClickListener = new MovieOnClickListener();
             mMovieContainer.setOnClickListener(mMovieOnClickListener);
 
-            mGetMoreContainer = (ViewGroup) itemView.findViewById(R.id.get_more_container);
             mGetMoreContainer.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -48,14 +47,17 @@ import com.leo.moviehunter.widget.DrawerAdapter.DrawerItem;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int DRAWER_GRAVITY = Gravity.START;
     private static final int RC_SIGN_IN = 1;
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerListView;
-    private Toolbar mToolBar;
+    @BindView(R.id.drawer) DrawerLayout mDrawerLayout;
+    @BindView(R.id.drawer_list) ListView mDrawerListView;
+    @BindView(R.id.my_toolbar) Toolbar mToolBar;
     private SearchView mSearchView;
     private boolean mLeaveFlag;
     private DrawerAdapter mAdapter;
@@ -67,12 +69,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 //        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mDrawerListView = (ListView) findViewById(R.id.drawer_list);
         DrawerItem[] drawerItems = new DrawerItem[] {
                 DrawerItem.createAccountItem(),
                 DrawerItem.createLinkItem(R.string.genre, getString(R.string.genre)),
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerListView.setAdapter(mAdapter);
         mDrawerListView.setOnItemClickListener(mDrawerItemClickListener);
 
-        mToolBar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mToolBar);
         mToolBar.setNavigationIcon(android.R.drawable.btn_dialog);
 //        mToolBar.setLogo(R.mipmap.ic_launcher);

@@ -14,6 +14,9 @@ import com.leo.moviehunter.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DrawerAdapter extends BaseAdapter {
 
     public static final int TYPE_ACCOUNT = 0;
@@ -52,9 +55,7 @@ public class DrawerAdapter extends BaseAdapter {
                 case TYPE_ACCOUNT: {
                     convertView = inflater.inflate(R.layout.drawer_account, null);
                     ViewHolderAccount holder = new ViewHolderAccount();
-                    holder.photo = (ImageView) convertView.findViewById(R.id.account_photo);
-                    holder.name = (TextView) convertView.findViewById(R.id.account_name);
-                    holder.email = (TextView) convertView.findViewById(R.id.account_email);
+                    ButterKnife.bind(holder, convertView);
                     convertView.setTag(holder);
                 }
                 break;
@@ -62,9 +63,7 @@ public class DrawerAdapter extends BaseAdapter {
                 case TYPE_LINK: {
                     convertView = inflater.inflate(R.layout.drawer_list_item, null);
                     ViewHolderLink holder = new ViewHolderLink();
-                    holder.icon1 = (ImageView) convertView.findViewById(R.id.icon);
-                    holder.title = (TextView) convertView.findViewById(R.id.title);
-                    holder.icon2 = (ImageView) convertView.findViewById(R.id.icon2);
+                    ButterKnife.bind(holder, convertView);
                     convertView.setTag(holder);
                 }
                 break;
@@ -120,16 +119,16 @@ public class DrawerAdapter extends BaseAdapter {
         mDrawerItemList = drawerItemList != null ? drawerItemList : EMPTY_LIST;
     }
 
-    private static class ViewHolderAccount {
-        ImageView photo;
-        TextView name;
-        TextView email;
+    static class ViewHolderAccount {
+        @BindView(R.id.account_photo) ImageView photo;
+        @BindView(R.id.account_name) TextView name;
+        @BindView(R.id.account_email) TextView email;
     }
 
-    private static class ViewHolderLink {
-        ImageView icon1;
-        TextView title;
-        ImageView icon2;
+    static class ViewHolderLink {
+        @BindView(R.id.icon) ImageView icon1;
+        @BindView(R.id.title) TextView title;
+        @BindView(R.id.icon2) ImageView icon2;
     }
 
     public static class DrawerItem {

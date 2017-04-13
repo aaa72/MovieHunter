@@ -22,11 +22,14 @@ import com.leo.moviehunter.widget.MovieAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class WatchedListFragment extends Fragment {
     private static final String TAG = "WatchedListFragment";
 
     private final List<Movie> mMovieList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recycler) RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
 
@@ -68,8 +71,8 @@ public class WatchedListFragment extends Fragment {
         Log.d(TAG, "onCreateView");
 
         View root = inflater.inflate(R.layout.fragment_watch_list, container, false);
+        ButterKnife.bind(this, root);
 
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);

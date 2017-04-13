@@ -31,6 +31,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class EditWatchedMovieFragment extends DialogFragment {
     private static final String TAG = "EditWatchedMovieFragment";
 
@@ -40,11 +43,11 @@ public class EditWatchedMovieFragment extends DialogFragment {
 
     private Movie mMovie;
     private WatchItem mWatchItem;
-    private TextView mTitle;
-    private TextView mScoreText;
-    private RatingBar mRatingBar;
-    private TextView mWatchDateText;
-    private EditText mCommentText;
+    @BindView(R.id.title) TextView mTitle;
+    @BindView(R.id.score_title) TextView mScoreText;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.date_title) TextView mWatchDateText;
+    @BindView(R.id.comment) EditText mCommentText;
     private Dialog mDialog;
     private OnEditDoneListener mOnEditDoneListener;
     private final Calendar mWatchDate = Calendar.getInstance();
@@ -74,11 +77,7 @@ public class EditWatchedMovieFragment extends DialogFragment {
         }
 
         final View customView = getActivity().getLayoutInflater().inflate(R.layout.fragment_edit_watched_movie, null);
-        mTitle = (TextView) customView.findViewById(R.id.title);
-        mScoreText = (TextView) customView.findViewById(R.id.score_title);
-        mRatingBar = (RatingBar) customView.findViewById(R.id.rating_bar);
-        mWatchDateText = (TextView) customView.findViewById(R.id.date_title);
-        mCommentText = (EditText) customView.findViewById(R.id.comment);
+        ButterKnife.bind(this, customView);
 
         mWatchDateText.setOnClickListener(new OnClickListener() {
             @Override

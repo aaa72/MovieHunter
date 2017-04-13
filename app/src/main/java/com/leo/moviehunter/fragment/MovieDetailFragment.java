@@ -32,22 +32,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailFragment extends Fragment {
     private static final String TAG = "MovieDetailFragment";
 
     private final DateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    private ImageView mImage;
-    private TextView mText1;
-    private TextView mText2;
-    private TextView mText3;
-    private TextView mText4;
-    private TextView mTextContent;
-    private TextView mRating;
-    private TextView mDate;
-    private TextView mComment;
-    private ImageView mEditIcon;
-    private ViewGroup mWatchedContainer;
+    @BindView(R.id.image) ImageView mImage;
+    @BindView(R.id.text1) TextView mText1;
+    @BindView(R.id.text2) TextView mText2;
+    @BindView(R.id.text3) TextView mText3;
+    @BindView(R.id.text4) TextView mText4;
+    @BindView(R.id.content) TextView mTextContent;
+    @BindView(R.id.rating) TextView mRating;
+    @BindView(R.id.date) TextView mDate;
+    @BindView(R.id.comment) TextView mComment;
+    @BindView(R.id.icon_edit) ImageView mEditIcon;
+    @BindView(R.id.watched_container) ViewGroup mWatchedContainer;
 
     private Movie mMovie;
     private WatchItem mWatchItem;
@@ -94,18 +97,7 @@ public class MovieDetailFragment extends Fragment {
         Log.d(TAG, "onCreateView");
 
         View root = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-
-        mImage = (ImageView) root.findViewById(R.id.image);
-        mText1 = (TextView) root.findViewById(R.id.text1);
-        mText2 = (TextView) root.findViewById(R.id.text2);
-        mText3 = (TextView) root.findViewById(R.id.text3);
-        mText4 = (TextView) root.findViewById(R.id.text4);
-        mTextContent = (TextView) root.findViewById(R.id.content);
-        mRating = (TextView) root.findViewById(R.id.rating);
-        mDate = (TextView) root.findViewById(R.id.date);
-        mComment = (TextView) root.findViewById(R.id.comment);
-        mEditIcon = (ImageView) root.findViewById(R.id.icon_edit);
-        mWatchedContainer = (ViewGroup) root.findViewById(R.id.watched_container);
+        ButterKnife.bind(this, root);
 
         mViewReady = true;
         setByMovie();

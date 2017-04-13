@@ -24,10 +24,13 @@ import com.leo.moviehunter.task.GetImageBaseUrlTask;
 import com.leo.moviehunter.util.Log;
 import com.leo.moviehunter.util.MHUtil;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class GenreMainFragment extends Fragment {
     private static final String TAG = "GenreMainFragment";
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recycler) RecyclerView mRecyclerView;
     private GenresAdapter mGenresAdapter;
     private GridLayoutManager mLayoutManager;
     private Genre[] mGenres;
@@ -67,7 +70,7 @@ public class GenreMainFragment extends Fragment {
         Log.d(TAG, "onCreateView");
 
         View root = inflater.inflate(R.layout.frament_genre_main, container, false);
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler);
+        ButterKnife.bind(this, root);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView

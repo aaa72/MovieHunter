@@ -27,14 +27,17 @@ import com.leo.moviehunter.R;
 import com.leo.moviehunter.util.CommonUtil;
 import com.leo.moviehunter.util.Log;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginAccountFragment extends Fragment {
     private static final String TAG = "LoginAccountFragment";
 
     private static final int RC_SIGN_IN = 1;
 
     private GoogleApiClient mGoogleApiClient;
-    private SignInButton mSignInButton;
-    private SignInButton mSignOutButton;
+    @BindView(R.id.sign_in_button) SignInButton mSignInButton;
+    @BindView(R.id.sign_out_button) SignInButton mSignOutButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,8 +68,7 @@ public class LoginAccountFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_account_login, container, false);
-        mSignInButton = (SignInButton) root.findViewById(R.id.sign_in_button);
-        mSignOutButton = (SignInButton) root.findViewById(R.id.sign_out_button);
+        ButterKnife.bind(this, root);
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
