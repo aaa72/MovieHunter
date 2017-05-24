@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "574397650066",
-    "project_id": "firebase-moviehunter"
+    "firebase_url": "https://fir-moviehunter.firebaseio.com",
+    "project_id": "firebase-moviehunter",
+    "storage_bucket": "firebase-moviehunter.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "574397650066-lsf5grb9l83o3g0d1kvprej2dee7r21d.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "574397650066-5lddm32qhsmh9f0u5a01ngg4j8k0j6pq.apps.googleusercontent.com",
           "client_type": 1,
@@ -38,11 +44,16 @@
           }
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "574397650066-lsf5grb9l83o3g0d1kvprej2dee7r21d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

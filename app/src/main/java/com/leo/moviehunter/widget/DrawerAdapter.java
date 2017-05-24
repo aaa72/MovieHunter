@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseUser;
 import com.leo.moviehunter.R;
 
 import java.util.ArrayList;
@@ -25,10 +26,10 @@ public class DrawerAdapter extends BaseAdapter {
     private final List<DrawerItem> EMPTY_LIST = new ArrayList<>(0);
 
     private List<DrawerItem> mDrawerItemList = EMPTY_LIST;
-    private GoogleSignInAccount mGoogleSingInAccount;
+    private FirebaseUser mSingInAccount;
 
-    public void setSignInAccount(GoogleSignInAccount account) {
-        mGoogleSingInAccount = account;
+    public void setSignInAccount(FirebaseUser account) {
+        mSingInAccount = account;
         notifyDataSetChanged();
     }
 
@@ -73,19 +74,19 @@ public class DrawerAdapter extends BaseAdapter {
         switch (getItemViewType(position)) {
             case TYPE_ACCOUNT: {
                 ViewHolderAccount holder = (ViewHolderAccount) convertView.getTag();
-                if (mGoogleSingInAccount != null) {
-                    if (mGoogleSingInAccount.getPhotoUrl() != null) {
+                if (mSingInAccount != null) {
+                    if (mSingInAccount.getPhotoUrl() != null) {
                         Glide.with(parent.getContext())
-                                .load(mGoogleSingInAccount.getPhotoUrl())
+                                .load(mSingInAccount.getPhotoUrl())
                                 .placeholder(R.mipmap.ic_launcher_round)
                                 .centerCrop()
                                 .crossFade()
                                 .into(holder.photo);
                     }
                     holder.name.setVisibility(View.VISIBLE);
-                    holder.name.setText(mGoogleSingInAccount.getDisplayName());
+                    holder.name.setText(mSingInAccount.getDisplayName());
                     holder.email.setVisibility(View.VISIBLE);
-                    holder.email.setText(mGoogleSingInAccount.getEmail());
+                    holder.email.setText(mSingInAccount.getEmail());
                 } else {
                     holder.photo.setImageResource(R.mipmap.ic_launcher_round);
                     holder.name.setVisibility(View.GONE);

@@ -37,3 +37,7 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 # Retrofit End
+
+# Firebase Auth
+-keepattributes Signature
+-keepattributes *Annotation*
