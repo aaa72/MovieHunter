@@ -8,8 +8,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ProviderTestCase2;
 
-import com.leo.moviehunter.data.user.UserDataHelper;
 import com.leo.moviehunter.data.user.WatchItem;
+import com.leo.moviehunter.datahelper.UserDataHelperFactory;
 import com.leo.moviehunter.provider.UserDataStore.TableWatchList;
 import com.leo.moviehunter.util.Log;
 
@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -41,28 +42,28 @@ public class UserDataProviderUnitTest extends ProviderTestCase2<UserDataProvider
         item = new WatchItem();
         ArrayList<WatchItem> list = new ArrayList<>();
         item.setMovieId("1");
-        item.setGenreIds(new String[] {"1","2","3"});
+        item.setGenreIds(Arrays.asList(new String[] {"1","2","3"}));
         list.add(item);
 
         item = new WatchItem();
         item.setMovieId("2");
-        item.setGenreIds(new String[] {"1","2"});
+        item.setGenreIds(Arrays.asList(new String[] {"1","2"}));
         list.add(item);
 
         item = new WatchItem();
         item.setMovieId("3");
-        item.setGenreIds(new String[] {"2","3"});
+        item.setGenreIds(Arrays.asList(new String[] {"2","3"}));
         list.add(item);
 
-        int ret = UserDataHelper.addToWatchList(getMockContext(), list);
+        int ret = UserDataHelperFactory.get(getMockContext()).addToWatchList(list);
         assertTrue(ret > 0);
 
         // Get
-        List<WatchItem> list2 = UserDataHelper.getToWatchList(getMockContext());
+        List<WatchItem> list2 = UserDataHelperFactory.get(getMockContext()).getToWatchList();
         assertTrue(list2 != null && list2.size() == ret);
 
         // delete
-        int delRet = UserDataHelper.deleteFromToWatchList(getMockContext(), list.subList(0, 1));
+        int delRet = UserDataHelperFactory.get(getMockContext()).deleteFromToWatchList(list.subList(0, 1));
         assertTrue(delRet == 1);
     }
 

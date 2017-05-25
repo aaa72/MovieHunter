@@ -8,6 +8,7 @@ import com.leo.moviehunter.data.Movie;
 import com.leo.moviehunter.data.user.WatchItem;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class MHUtil {
     public static WatchItem createWatchItem(Movie movie) {
         WatchItem watchItem = new WatchItem();
         watchItem.setMovieId(movie.getId());
-        watchItem.setGenreIds(movie.getGenreIds());
+        watchItem.setGenreIds(Arrays.asList(movie.getGenreIds()));
         return watchItem;
     }
 }

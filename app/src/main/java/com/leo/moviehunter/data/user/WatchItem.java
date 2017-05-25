@@ -3,6 +3,9 @@ package com.leo.moviehunter.data.user;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WatchItem implements Parcelable {
 
     public WatchItem() {}
@@ -47,14 +50,15 @@ public class WatchItem implements Parcelable {
         mWatchedEpochTime = watchedEpochTime;
     }
 
-    private String[] mGenreIds;
+    private final List<String> mGenreIds = new ArrayList<>();
 
-    public String[] getGenreIds() {
-        return mGenreIds;
+    public List<String> getGenreIds() {
+        return new ArrayList<>(mGenreIds);
     }
 
-    public void setGenreIds(String[] genreId) {
-        mGenreIds = genreId;
+    public void setGenreIds(List<String> genreId) {
+        mGenreIds.clear();
+        mGenreIds.addAll(genreId);
     }
 
     private String mComment;
@@ -88,7 +92,7 @@ public class WatchItem implements Parcelable {
         dest.writeInt(mStatus);
         dest.writeLong(mAddedEpochTime);
         dest.writeLong(mWatchedEpochTime);
-        dest.writeStringArray(mGenreIds);
+        dest.writeStringList(mGenreIds);
         dest.writeString(mComment);
         dest.writeFloat(mScore);
     }
@@ -98,7 +102,7 @@ public class WatchItem implements Parcelable {
         mStatus = in.readInt();
         mAddedEpochTime = in.readLong();
         mWatchedEpochTime = in.readLong();
-        mGenreIds = in.createStringArray();
+        mGenreIds.addAll(in.createStringArrayList());
         mComment = in.readString();
         mScore = in.readFloat();
     }

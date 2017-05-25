@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             handleSignInResult(user);
+                            openFragment(WatchListFragment.newInstance());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -256,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             mFirebaseAuth.signOut();
                             handleSignInResult(null);
+                            openFragment(GenreMainFragment.newInstance());
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null).create().show();

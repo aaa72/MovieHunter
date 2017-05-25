@@ -3,8 +3,8 @@ package com.leo.moviehunter.task;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.leo.moviehunter.data.user.UserDataHelper;
 import com.leo.moviehunter.data.user.WatchItem;
+import com.leo.moviehunter.datahelper.UserDataHelperFactory;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public abstract class DeleteFromWatchedListTask extends AsyncTask<List<WatchItem
 
     @Override
     protected List<WatchItem> doInBackground(List<WatchItem>... params) {
-        int ret = UserDataHelper.deleteFromWatchedList(mContext, params[0]);
+        int ret = UserDataHelperFactory.get(mContext).deleteFromWatchedList(params[0]);
         return ret > 0 ? params[0] : null;
     }
 

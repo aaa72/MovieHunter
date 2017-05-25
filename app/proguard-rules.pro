@@ -41,3 +41,8 @@
 # Firebase Auth
 -keepattributes Signature
 -keepattributes *Annotation*
+
+# Firebase Database
+-keepattributes Signature
+-keep class com.le.moviehunter.data.** { *; }
+-keepclassmembers class com.leo.moviehunter.data.** { *; }
