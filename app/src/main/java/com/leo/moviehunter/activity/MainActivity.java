@@ -38,6 +38,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.leo.moviehunter.R;
 import com.leo.moviehunter.fragment.GenreMainFragment;
 import com.leo.moviehunter.fragment.NowPlayingFragment;
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        Log.d(TAG, "token = " + FirebaseInstanceId.getInstance().getToken());
 
 //        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         DrawerItem[] drawerItems = new DrawerItem[] {
