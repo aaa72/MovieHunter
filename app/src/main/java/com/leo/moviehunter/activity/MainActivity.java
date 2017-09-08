@@ -135,6 +135,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         handleSignInResult(mFirebaseAuth.getCurrentUser());
+
+        if (!CommonUtil.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Network not available", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

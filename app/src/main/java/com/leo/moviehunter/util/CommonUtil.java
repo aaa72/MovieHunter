@@ -1,6 +1,8 @@
 package com.leo.moviehunter.util;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -126,5 +128,15 @@ public class CommonUtil {
         }
         sb.append("-Intent\n");
         return sb.toString();
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        try {
+            return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE))
+                    .getActiveNetworkInfo()
+                    .isConnected();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

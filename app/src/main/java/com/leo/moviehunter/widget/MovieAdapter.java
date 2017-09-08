@@ -79,7 +79,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         new GetGenresTask(fragment.getActivity()) {
             @Override
             protected void getGenres(Genre[] genres) {
-                mGenreMap.putAll(MHUtil.genresToMap(genres));
+                if (genres != null) {
+                    mGenreMap.putAll(MHUtil.genresToMap(genres));
+                }
                 notifyDataSetChanged();
             }
         }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
